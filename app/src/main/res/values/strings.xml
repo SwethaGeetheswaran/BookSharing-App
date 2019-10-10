@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BookSharingApp</string>
+    <string name="Open">Open</string>
+    <string name="Close">Close</string>
+    <string name="book_list">Book List</string>
+    <string name="logout">Logout</string>
 </resources>

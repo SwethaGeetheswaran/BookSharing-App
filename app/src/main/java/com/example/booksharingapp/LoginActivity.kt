@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -14,6 +16,11 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.login_activity.*
+import androidx.biometric.BiometricPrompt
+import java.util.concurrent.Executors
+import androidx.biometric.BiometricConstants.ERROR_NEGATIVE_BUTTON
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +29,40 @@ class MainActivity : AppCompatActivity() {
     lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var firebaseAuth: FirebaseAuth
 
+    var biometricPrompt: BiometricPrompt? = null
+    val newExecutor = Executors.newSingleThreadExecutor()
+
+    private val callback = object : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            super.onAuthenticationError(errorCode, errString)
+            if (errorCode == ERROR_NEGATIVE_BUTTON && biometricPrompt != null)
+                biometricPrompt!!.cancelAuthentication()
+            runOnUiThread {
+                Toast.makeText(this@MainActivity,errString,Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+            runOnUiThread{
+                Toast.makeText(this@MainActivity,"Authentication succeed",Toast.LENGTH_SHORT).show()
+            }
+            startActivity(HomeActivity.getLaunchIntent(this@MainActivity))
+        }
+
+        override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            runOnUiThread {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Application did not recognize the placed finger print. Please try again!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
@@ -29,6 +70,29 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         firebaseAuth = FirebaseAuth.getInstance()
 
+        if (biometricPrompt == null)
+            biometricPrompt = BiometricPrompt(this, newExecutor, callback)
+
+
+        fingerprint_authentication.setOnClickListener {
+                Log.v("MainActivty","Fingerprint")
+                val promptInfo = buildBiometricPrompt()
+                biometricPrompt!!.authenticate(promptInfo)
+
+
+            Log.v("MainActivty","Fingerprint-2")
+        }
+
+    }
+
+
+    private fun buildBiometricPrompt(): BiometricPrompt.PromptInfo {
+        return BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Login")
+            .setSubtitle("Login into your account")
+            .setDescription("Touch your finger on the finger print sensor to authorise your account.")
+            .setNegativeButtonText("Cancel")
+            .build()
     }
 
 

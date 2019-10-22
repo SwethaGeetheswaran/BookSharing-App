@@ -4,8 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
-import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -19,11 +20,12 @@ import kotlinx.android.synthetic.main.login_activity.*
 import androidx.biometric.BiometricPrompt
 import java.util.concurrent.Executors
 import androidx.biometric.BiometricConstants.ERROR_NEGATIVE_BUTTON
-
+import androidx.core.view.isVisible
 
 
 class MainActivity : AppCompatActivity() {
 
+    private val TAG = "MainActivity"
     val RC_SIGN_IN: Int = 1
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var mGoogleSignInOptions: GoogleSignInOptions
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
     var biometricPrompt: BiometricPrompt? = null
     val newExecutor = Executors.newSingleThreadExecutor()
+
+    private var mProgressBar: ProgressBar? = null
 
     private val callback = object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -70,21 +74,39 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         firebaseAuth = FirebaseAuth.getInstance()
 
+        initializeforFingerprint()
+        intializeForLogin()
+        initializeForCreateAccount()
+        login_button.setOnClickListener { loginWithEmailandPassword() }
+    }
+
+
+    private fun initializeForCreateAccount(){
+        create_account_button.setOnClickListener {
+            startActivity(createAccount_Activity.getLaunchIntent(this))
+        }
+
+    }
+
+    private fun intializeForLogin(){
+        mProgressBar = ProgressBar(this)
+        forgot_password.setOnClickListener {
+            startActivity(Intent(this,Forgot_password_activity::class.java))
+        }
+    }
+
+    private fun initializeforFingerprint(){
         if (biometricPrompt == null)
             biometricPrompt = BiometricPrompt(this, newExecutor, callback)
 
 
         fingerprint_authentication.setOnClickListener {
-                Log.v("MainActivty","Fingerprint")
-                val promptInfo = buildBiometricPrompt()
-                biometricPrompt!!.authenticate(promptInfo)
-
-
-            Log.v("MainActivty","Fingerprint-2")
+            Log.v("MainActivty","Fingerprint")
+            val promptInfo = buildBiometricPrompt()
+            biometricPrompt!!.authenticate(promptInfo)
         }
 
     }
-
 
     private fun buildBiometricPrompt(): BiometricPrompt.PromptInfo {
         return BiometricPrompt.PromptInfo.Builder()
@@ -95,6 +117,29 @@ class MainActivity : AppCompatActivity() {
             .build()
     }
 
+    private fun loginWithEmailandPassword(){
+        val email = login_email?.text.toString()
+        val password = login_password?.text.toString()
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+            //mProgressBar!!.text
+            mProgressBar!!.isVisible = true
+            Log.d(TAG, "Logging in user.")
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    mProgressBar!!.isVisible = false
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "signInWithEmail:success")
+                        startActivity(Intent(this,HomeActivity::class.java))
+                    } else {
+                        Log.e(TAG, "signInWithEmail:failure", task.exception)
+                        Toast.makeText(this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+        } else {
+            Toast.makeText(this, "Enter all details", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun configureGoogleSignIn() {
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

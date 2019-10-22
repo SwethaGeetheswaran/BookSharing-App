@@ -5,4 +5,19 @@
     <string name="book_list">Book List</string>
     <string name="logout">Logout</string>
     <string name="fingerprint_authentication">Fingerprint</string>
+
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">Enter your email</string>
+    <string name="password">Enter your password</string>
+    <string name="password2">Re-enter your password</string>
+    <string name="create_account">Create Account</string>
+
+
+    <string name="user_email">Email</string>
+    <string name="user_password">Password</string>
+    <string name="user_first_name">First Name</string>
+    <string name="user_last_name">Last Name</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password?</string>
 </resources>

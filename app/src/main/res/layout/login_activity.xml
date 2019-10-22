@@ -1,37 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <EditText
+        android:id="@+id/login_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+        android:autofillHints="@string/email"
+        tools:targetApi="o"
+        android:inputType="textEmailAddress"
+        android:drawableStart="@drawable/ic_email"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+
+    <EditText
+        android:id="@+id/login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_email"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:drawableStart="@drawable/ic_password"
+        android:layout_marginEnd="20dp"
+        android:hint="@string/password"
+        android:autofillHints="@string/password"
+        tools:targetApi="o"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_password"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/colorPurple"
+        android:text="@string/login"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:text="@string/forgot_password"
+        android:textSize="20sp"
+        android:focusable="true" />
+
+    <Button
+        android:id="@+id/create_account_button"
+        android:layout_width="163dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/colorAccent"
+        android:layout_toEndOf="@id/forgot_password"
+        android:textColor="@android:color/white"
+        android:text="@string/create_account" />
+
     <com.google.android.gms.common.SignInButton
         android:id="@+id/google_button"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.745" />
+        android:layout_below="@id/create_account_button"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp" />
 
     <ImageButton
         android:id="@+id/fingerprint_authentication"
-        android:layout_width="63dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_fingerprint"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.551"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.853" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/google_button"
+        android:layout_marginStart="191dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="173dp"
+        android:background="@color/colorWhite"
+        android:src="@drawable/ic_fingerprint" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

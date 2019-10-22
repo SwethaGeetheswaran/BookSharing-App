@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/first_name"
+        android:ems="10"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:drawableStart="@drawable/ic_fingerprint"
+        android:layout_margin="8dp"
+        android:hint="@string/first_name"
+        android:autofillHints="@string/first_name"
+        tools:targetApi="o"
+        android:inputType="textPersonName" />
+    <EditText
+        android:id="@+id/last_name"
+        android:layout_below="@id/first_name"
+        android:ems="10"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:hint="@string/last_name"
+        android:autofillHints="@string/last_name"
+        tools:targetApi="o"
+        android:inputType="textPersonName" />
+    <EditText
+        android:id="@+id/email"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:ems="10"
+        android:drawableStart="@drawable/ic_email"
+        android:layout_below="@id/last_name"
+        android:hint="@string/email"
+        android:autofillHints="@string/email"
+        tools:targetApi="o"
+        android:inputType="textEmailAddress" />
+    <EditText
+        android:id="@+id/password"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_below="@id/email"
+        android:ems="10"
+        android:hint="@string/password"
+        android:autofillHints="@string/password"
+        tools:targetApi="o"
+        android:inputType="textPassword" />
+    <EditText
+        android:id="@+id/sec_password"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_below="@id/password"
+        android:ems="10"
+        android:hint="@string/password2"
+        android:autofillHints="@string/password2"
+        tools:targetApi="o"
+        android:inputType="textPassword" />
+    <Button
+        android:id="@+id/create_account_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_below="@id/sec_password"
+        android:background="@color/colorPurple"
+        android:text="@string/create_account"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+</RelativeLayout>

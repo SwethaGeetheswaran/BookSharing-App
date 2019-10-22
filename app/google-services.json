@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "222196921265-00td5ejcm9jupkie3jio15gg16q6qpb0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.booksharingapp",
+            "certificate_hash": "509447958cdb29fd4a5788b17071de3748fd4701"
+          }
+        },
+        {
           "client_id": "222196921265-1d3ajaj7569cp3lclo9nolqk6hqgbj5l.apps.googleusercontent.com",
           "client_type": 3
         }

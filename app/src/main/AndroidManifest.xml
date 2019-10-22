@@ -21,6 +21,8 @@
         </activity>
 
         <activity android:name=".HomeActivity"/>
+        <activity android:name=".createAccount_Activity"/>
+        <activity android:name=".Forgot_password_activity"/>
     </application>
 
 </manifest>

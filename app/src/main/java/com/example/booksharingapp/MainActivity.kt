@@ -5,7 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.widget.CompoundButton
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -78,6 +81,21 @@ class MainActivity : AppCompatActivity() {
         intializeForLogin()
         initializeForCreateAccount()
         login_button.setOnClickListener { loginWithEmailandPassword() }
+
+        checkbox.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(compoundButton : CompoundButton, isChecked : Boolean) {
+                if (isChecked) {
+                    // hide password
+                    checkbox.text = "Hide Password"
+                    login_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+                } else {
+                    // show password
+                    checkbox.text = "Show Password"
+                    login_password.setTransformationMethod(PasswordTransformationMethod.getInstance())
+                }
+            }
+        })
+
     }
 
 

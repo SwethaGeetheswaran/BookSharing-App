@@ -21,4 +21,6 @@
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="password_reset_email">Send Password Reset Email</string>
+    <string name="show_password">Show Password</string>
+    <string name="hide_password">Hide Password</string>
 </resources>

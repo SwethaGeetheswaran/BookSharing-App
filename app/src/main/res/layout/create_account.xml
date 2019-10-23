@@ -10,7 +10,7 @@
         android:ems="10"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:drawableStart="@drawable/ic_fingerprint"
+        android:drawableStart="@drawable/ic_profile_name"
         android:layout_margin="8dp"
         android:hint="@string/first_name"
         android:autofillHints="@string/first_name"
@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="8dp"
+        android:drawableStart="@drawable/ic_profile_name"
         android:hint="@string/last_name"
         android:autofillHints="@string/last_name"
         tools:targetApi="o"
@@ -48,6 +49,7 @@
         android:ems="10"
         android:hint="@string/password"
         android:autofillHints="@string/password"
+        android:drawableStart="@drawable/ic_password"
         tools:targetApi="o"
         android:inputType="textPassword" />
     <EditText
@@ -58,6 +60,7 @@
         android:layout_below="@id/password"
         android:ems="10"
         android:hint="@string/password2"
+        android:drawableStart="@drawable/ic_password"
         android:autofillHints="@string/password2"
         tools:targetApi="o"
         android:inputType="textPassword" />

@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.create_account.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class createAccount_Activity : AppCompatActivity() {
@@ -36,10 +38,33 @@ class createAccount_Activity : AppCompatActivity() {
 
     }
 
+    fun isValidPassword(password: String): Boolean {
+
+        val pattern: Pattern
+        val matcher: Matcher
+        val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$"
+        pattern = Pattern.compile(PASSWORD_PATTERN)
+        matcher = pattern.matcher(password)
+
+        return matcher.matches()
+
+    }
     fun createUserAccount(){
-        if (!TextUtils.isEmpty(first_name?.toString()) && !TextUtils.isEmpty(last_name.toString())
-            && !TextUtils.isEmpty(email.toString()) && !TextUtils.isEmpty(password.toString())
-            && !TextUtils.isEmpty(sec_password.toString())) { createUser() }
+
+        val first_password = password.text.toString().trim()
+        val second_password = sec_password.text.toString().trim()
+        if (!TextUtils.isEmpty(first_name?.text.toString()) && !TextUtils.isEmpty(last_name?.text.toString())
+            && !TextUtils.isEmpty(email?.text.toString()) && !TextUtils.isEmpty(first_password)
+            && !TextUtils.isEmpty(second_password)) {
+
+            Log.v(TAG, "1: " + first_password)
+            Log.v(TAG, "2: " +second_password.length)
+            if((first_password.length < 8 || second_password.length < 8)&& (!isValidPassword(first_password ) ||!isValidPassword(second_password)) ) {
+                Toast.makeText(this, "Password length is too short. Please enter a minimum of 8 characters.", Toast.LENGTH_SHORT).show()
+            }
+            else if(first_password == second_password) createUser()
+            else { Toast.makeText(this, "Mis-match between passwords!. Please re-try again.",Toast.LENGTH_SHORT).show() }
+        }
         else {
             Toast.makeText(this, "Please enter all details to create an account", Toast.LENGTH_SHORT).show()
         }
@@ -84,7 +109,6 @@ class createAccount_Activity : AppCompatActivity() {
     }
 
     private fun updateUserInfoAndUI() {
-        //start next activity
         val intent = Intent(this, HomeActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)

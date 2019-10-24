@@ -25,7 +25,8 @@ class HomeActivity : AppCompatActivity() {
         drawer_layout!!.addDrawerListener(drawer_toggle!!)
         drawer_toggle!!.syncState()
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setTitle(R.string.home)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         navig_view = findViewById(R.id.navig_header) as NavigationView
         navig_view!!.setNavigationItemSelectedListener(object :
@@ -37,13 +38,18 @@ class HomeActivity : AppCompatActivity() {
                     else -> return true
                 }
 
-                return true
+                return false
 
             }
         })
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       if(drawer_toggle!!.onOptionsItemSelected(item)) return true
+
+        return super.onOptionsItemSelected(item)
+    }
     companion object {
         fun getLaunchIntent(from: Context) = Intent(from, HomeActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

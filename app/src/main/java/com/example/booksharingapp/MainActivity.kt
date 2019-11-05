@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         firebaseAuth = FirebaseAuth.getInstance()
 
+        mProgressBar = ProgressBar(this)
         initializeforFingerprint()
         intializeForLogin()
         initializeForCreateAccount()
@@ -86,11 +87,11 @@ class MainActivity : AppCompatActivity() {
             override fun onCheckedChanged(compoundButton : CompoundButton, isChecked : Boolean) {
                 if (isChecked) {
                     // hide password
-                    checkbox.text = "Hide Password"
+                    checkbox.text = "Hide password"
                     login_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
                 } else {
                     // show password
-                    checkbox.text = "Show Password"
+                    checkbox.text = "Show password"
                     login_password.setTransformationMethod(PasswordTransformationMethod.getInstance())
                 }
             }
@@ -107,7 +108,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun intializeForLogin(){
-        mProgressBar = ProgressBar(this)
         forgot_password.setOnClickListener {
             startActivity(Intent(this,Forgot_password_activity::class.java))
         }

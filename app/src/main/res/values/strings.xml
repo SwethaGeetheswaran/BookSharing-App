@@ -20,6 +20,9 @@
     <string name="create_account">Create Account</string>
     <string name="home">Home</string>
     <string name="user_name">Username</string>
+    <string name="about_myself">About myself</string>
+
+
 
     <string name="user_email">Email</string>
     <string name="user_password">Password</string>

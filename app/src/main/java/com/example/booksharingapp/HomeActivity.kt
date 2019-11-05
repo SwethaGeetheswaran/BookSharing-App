@@ -12,9 +12,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 
 class HomeActivity : AppCompatActivity() {
 
-    private var drawer_layout: DrawerLayout? = null
-    private var drawer_toggle: ActionBarDrawerToggle? = null
-    private var navig_view: NavigationView? = null
+    private lateinit var drawer_layout: DrawerLayout
+    private lateinit var drawer_toggle: ActionBarDrawerToggle
+    private lateinit var navig_view: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,18 +22,19 @@ class HomeActivity : AppCompatActivity() {
         drawer_layout = findViewById(R.id.drawer_layout) as DrawerLayout
         drawer_toggle = ActionBarDrawerToggle(this, drawer_layout, R.string.Open, R.string.Close)
 
-        drawer_layout!!.addDrawerListener(drawer_toggle!!)
-        drawer_toggle!!.syncState()
+        drawer_layout.addDrawerListener(drawer_toggle)
+        drawer_toggle.syncState()
 
         supportActionBar?.setTitle(R.string.home)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         navig_view = findViewById(R.id.navig_header) as NavigationView
-        navig_view!!.setNavigationItemSelectedListener(object :
+        navig_view.setNavigationItemSelectedListener(object :
             NavigationView.OnNavigationItemSelectedListener {
             override fun onNavigationItemSelected(item: MenuItem): Boolean {
                 val id = item.getItemId()
                 when (id) {
+                    R.id.profile -> startActivity(user_profile_activity.getLaunchIntent(this@HomeActivity))
                     R.id.signout -> signOut()
                     else -> return true
                 }
@@ -46,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-       if(drawer_toggle!!.onOptionsItemSelected(item)) return true
+       if(drawer_toggle.onOptionsItemSelected(item)) return true
 
         return super.onOptionsItemSelected(item)
     }

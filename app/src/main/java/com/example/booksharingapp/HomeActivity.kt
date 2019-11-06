@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.android.material.navigation.NavigationView
@@ -45,13 +46,22 @@ class HomeActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val profile_first_name = dataSnapshot.child("firstName").value.toString()
-                val profile_last_name = dataSnapshot.child("lastName").value.toString()
-                val user_name = profile_first_name + " "  + profile_last_name
-                val profile_image = dataSnapshot.child("ProfileImage").value.toString()
+                if(dataSnapshot.exists()) {
+                    if (dataSnapshot.hasChild("firstName") && dataSnapshot.hasChild("lastName")) {
+                        val profile_first_name = dataSnapshot.child("firstName").value.toString()
+                        val profile_last_name = dataSnapshot.child("lastName").value.toString()
+                        val user_name = profile_first_name + " " + profile_last_name
+                        navig_header_user_name.text = user_name
+                    }
 
-                Picasso.get().load(profile_image).placeholder(R.drawable.ic_profile).into(navig_header_profile_image)
-                navig_header_user_name.text = user_name
+                    if (dataSnapshot.hasChild("ProfileImage")) {
+                        val profile_image = dataSnapshot.child("ProfileImage").value.toString()
+                        Picasso.get().load(profile_image).placeholder(R.drawable.ic_profile)
+                            .into(navig_header_profile_image)
+                    }else{
+                        Toast.makeText(this@HomeActivity,"Profile does not exists.",Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
 
         })

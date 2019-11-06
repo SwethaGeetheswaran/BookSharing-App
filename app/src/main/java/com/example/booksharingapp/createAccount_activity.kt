@@ -3,26 +3,22 @@ package com.example.booksharingapp
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.create_account.*
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -33,15 +29,15 @@ class createAccount_Activity : AppCompatActivity() {
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
     private val mGalleryNo = 1
-    private lateinit var mUserProfileImage : StorageReference
+    private lateinit var mUserStorageRefs : StorageReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.create_account)
-
+        supportActionBar?.setTitle(R.string.create_account)
         mDatabase = FirebaseDatabase.getInstance()
         mDatabaseReference = mDatabase.reference.child("Users")
-        mUserProfileImage = FirebaseStorage.getInstance().reference.child("UserProfileImages")
+        mUserStorageRefs = FirebaseStorage.getInstance().reference.child("UserProfileImages")
         mAuth = FirebaseAuth.getInstance()
 
         create_account_button.setOnClickListener { createUserAccount() }
@@ -49,20 +45,18 @@ class createAccount_Activity : AppCompatActivity() {
         // Profile image
         create_account_profile_image.setOnClickListener{
             val galleryIntent = Intent()
-            galleryIntent.action = Intent.ACTION_GET_CONTENT
+            galleryIntent.action = Intent.ACTION_PICK
             galleryIntent.type = "image/*"
             startActivityForResult(galleryIntent, mGalleryNo)
         }
-
     }
-
+    lateinit var resultUri  : Uri
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == mGalleryNo && resultCode == Activity.RESULT_OK && data != null){
 
-            //val ImageUri  : Uri? = data.data
-            // start picker to get image for cropping and then use the image in cropping activity
+           //  ImageUri = data.data
             CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(1,1)
@@ -72,39 +66,27 @@ class createAccount_Activity : AppCompatActivity() {
         if (requestCode === CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode === Activity.RESULT_OK) {
-                val resultUri = result.uri
-                val filePath: StorageReference =
-                    mUserProfileImage.child(mAuth.currentUser!!.uid + ".jpg")
-                filePath.putFile(resultUri).addOnCompleteListener(object :
-                    OnCompleteListener<UploadTask.TaskSnapshot> {
-                    override fun onComplete(task: Task<UploadTask.TaskSnapshot>) {
-                        if(task.isSuccessful){
-                            val downloadUrl :String = task.result.toString()
-                            mDatabaseReference.child("ProfileImage").setValue(downloadUrl)
-                                .addOnCompleteListener(object :OnCompleteListener<Void>{
-                                    override fun onComplete(task: Task<Void>) {
-                                        if(task.isSuccessful){
-                                            val selfIntent = Intent(this@createAccount_Activity, createAccount_Activity::class.java)
-                                            startActivity(selfIntent)
-                                            Toast.makeText(this@createAccount_Activity,"Profile image has been successfully stored to Firebase Database",Toast.LENGTH_SHORT).show()
-                                        }
-                                        if(!task.isSuccessful){
-                                            val errorMessage = task.exception?.localizedMessage
-                                            Toast.makeText(this@createAccount_Activity,"Error while storing image to Firebase Database" + errorMessage,Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-
-                                })
-                        }
-                    }
-                })
-
+                resultUri = result.uri
+                val bitmap:Bitmap = MediaStore.Images.Media.getBitmap(contentResolver,resultUri)
+                create_account_profile_image.setImageBitmap(bitmap)
             } else{
                 Toast.makeText(this@createAccount_Activity,"Error while cropping image. Please try again.",Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    fun uploadProfileImagetoFirebase(resultUri :Uri){
+        val filePath: StorageReference =
+            mUserStorageRefs.child(UUID.randomUUID().toString()+ ".jpg")
+        filePath.putFile(resultUri).addOnSuccessListener {
+                    Log.d(TAG,"Successfully uploaded image: ${it.metadata?.path}")
+            filePath.downloadUrl.addOnSuccessListener {
+                val currentUserDb = mDatabaseReference.child(mAuth.currentUser!!.uid)
+                currentUserDb.child("ProfileImage").setValue(it.toString())
+            }
+        }
+
+    }
     // To validate password
     fun isValidPassword(password: String): Boolean {
 
@@ -146,11 +128,11 @@ class createAccount_Activity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "createUserWithEmail:success")
-                    val userId = mAuth.currentUser!!.uid
                     verifyEmail()
-                    val currentUserDb = mDatabaseReference.child(userId)
+                    val currentUserDb = mDatabaseReference.child(mAuth.currentUser!!.uid)
                     currentUserDb.child("firstName").setValue(first_name.text.toString().trim())
                     currentUserDb.child("lastName").setValue(last_name.text.toString().trim())
+                    uploadProfileImagetoFirebase(resultUri)
                     updateUserInfoAndUI()
                 } else {
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)

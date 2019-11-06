@@ -9,12 +9,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.android.material.navigation.NavigationView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
+import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.navig_drawer_header.*
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var drawer_layout: DrawerLayout
     private lateinit var drawer_toggle: ActionBarDrawerToggle
     private lateinit var navig_view: NavigationView
+    private lateinit var mDatabaseReference: DatabaseReference
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mDatabase: FirebaseDatabase
+    private lateinit var currentUserID:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +32,29 @@ class HomeActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(drawer_toggle)
         drawer_toggle.syncState()
 
+        mDatabase = FirebaseDatabase.getInstance()
+        mDatabaseReference = mDatabase.reference.child("Users")
+        mAuth = FirebaseAuth.getInstance()
+        currentUserID = mAuth.currentUser!!.uid
         supportActionBar?.setTitle(R.string.home)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        mDatabaseReference.child(currentUserID).addValueEventListener(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val profile_first_name = dataSnapshot.child("firstName").value.toString()
+                val profile_last_name = dataSnapshot.child("lastName").value.toString()
+                val user_name = profile_first_name + " "  + profile_last_name
+                val profile_image = dataSnapshot.child("ProfileImage").value.toString()
+
+                Picasso.get().load(profile_image).placeholder(R.drawable.ic_profile).into(navig_header_profile_image)
+                navig_header_user_name.text = user_name
+            }
+
+        })
         navig_view = findViewById(R.id.navig_header) as NavigationView
         navig_view.setNavigationItemSelectedListener(object :
             NavigationView.OnNavigationItemSelectedListener {

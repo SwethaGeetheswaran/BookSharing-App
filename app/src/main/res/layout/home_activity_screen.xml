@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:menu="@menu/action_bar_menu">
 
         <FrameLayout
             android:id="@+id/frame_layout"
@@ -18,7 +19,6 @@
                 android:layout_height="match_parent"
                 android:id="@+id/recycler_view" />
         </FrameLayout>
-
 
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"

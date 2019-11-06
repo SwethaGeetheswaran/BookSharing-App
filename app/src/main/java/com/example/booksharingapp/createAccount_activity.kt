@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -37,6 +38,8 @@ class createAccount_Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.create_account)
         supportActionBar?.setTitle(R.string.create_account)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         mDatabase = FirebaseDatabase.getInstance()
         mDatabaseReference = mDatabase.reference.child("Users")
         mUserStorageRefs = FirebaseStorage.getInstance().reference.child("UserProfileImages")
@@ -185,4 +188,10 @@ class createAccount_Activity : AppCompatActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> startActivity(MainActivity.getLaunchIntent(this))
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

@@ -24,7 +24,8 @@
         <activity android:name=".HomeActivity" />
         <activity android:name=".createAccount_Activity" />
         <activity android:name=".Forgot_password_activity" />
-        <activity android:name=".user_profile_activity"/>
+        <activity android:name=".user_profile_activity" />
+        <activity android:name=".user_post_activity"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

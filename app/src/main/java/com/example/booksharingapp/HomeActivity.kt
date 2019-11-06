@@ -3,6 +3,7 @@ package com.example.booksharingapp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +40,7 @@ class HomeActivity : AppCompatActivity() {
         currentUserID = mAuth.currentUser!!.uid
         supportActionBar?.setTitle(R.string.home)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setIcon(R.drawable.ic_add_post)
 
         mDatabaseReference.child(currentUserID).addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
@@ -83,8 +85,21 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.action_bar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-       if(drawer_toggle.onOptionsItemSelected(item)) return true
+        when (item.getItemId()) {
+            R.id.add_post -> {
+                Toast.makeText(this,"Add post",Toast.LENGTH_SHORT).show()
+                startActivity(user_post_activity.getLaunchIntent(this@HomeActivity))
+            }
+
+        }
+        if (drawer_toggle.onOptionsItemSelected(item))
+            return true
 
         return super.onOptionsItemSelected(item)
     }

@@ -11,11 +11,7 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_user_profile_activity.*
 import android.graphics.BitmapFactory
-import com.google.firebase.storage.FileDownloadTask
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.storage.FirebaseStorage
-import java.io.File
-import java.lang.Exception
+import android.view.MenuItem
 
 
 class user_profile_activity : AppCompatActivity() {
@@ -28,6 +24,8 @@ class user_profile_activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile_activity)
         supportActionBar?.setTitle(R.string.profile)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser!!.uid
         mDatabaseReference= FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
@@ -61,5 +59,12 @@ class user_profile_activity : AppCompatActivity() {
         fun getLaunchIntent(from: Context) = Intent(from, user_profile_activity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> startActivity(HomeActivity.getLaunchIntent(this))
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

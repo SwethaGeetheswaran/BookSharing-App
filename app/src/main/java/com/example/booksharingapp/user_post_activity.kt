@@ -116,7 +116,7 @@ class user_post_activity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     private fun storeUserPostsToFirebase() {
         val date = Calendar.getInstance()
-        val current_date = SimpleDateFormat("dd-MMMM-yyyy")
+        val current_date = SimpleDateFormat("MMM-dd-yy")
         save_post_date = current_date.format(date.getTime())
 
         val current_time = SimpleDateFormat("HH:mm")
@@ -130,8 +130,11 @@ class user_post_activity : AppCompatActivity() {
 
         filePath.putFile(ImageUri!!).addOnSuccessListener {
             Log.d(TAG,"Successfully uploaded image: ${it.metadata?.path}")
-            downloadUrl = filePath.downloadUrl.toString()
-            saveUserPostDataToFirebase()
+            filePath.downloadUrl.addOnSuccessListener {
+                downloadUrl = it.toString()
+                saveUserPostDataToFirebase()
+            }
+
         }
             .addOnFailureListener {
                 Log.v(TAG, it.printStackTrace().toString())

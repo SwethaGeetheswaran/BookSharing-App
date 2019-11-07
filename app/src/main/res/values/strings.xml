@@ -23,6 +23,8 @@
     <string name="about_myself">About myself</string>
     <string name="select_photo">SELECT PHOTO</string>
     <string name="add_post">Add a post</string>
+    <string name="post_it_button">Post it!</string>
+    <string name="post_text">Whats on your mind about books?</string>
 
 
     <string name="user_email">Email</string>

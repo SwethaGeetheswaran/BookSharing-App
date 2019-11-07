@@ -93,7 +93,6 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.add_post -> {
-                Toast.makeText(this,"Add post",Toast.LENGTH_SHORT).show()
                 startActivity(user_post_activity.getLaunchIntent(this@HomeActivity))
             }
 

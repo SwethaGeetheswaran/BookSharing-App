@@ -1,11 +1,14 @@
 package com.example.booksharingapp
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
@@ -15,6 +18,7 @@ class Detailed_user_post_Activity : AppCompatActivity() {
 
     private var placeId:String? = null
     private var currentUserId:String? = null
+    private var user_post_text:String? = null
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabaseReference: DatabaseReference
 
@@ -38,7 +42,7 @@ class Detailed_user_post_Activity : AppCompatActivity() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                val user_post_text = p0.child("description").value.toString()
+                    user_post_text = p0.child("description").value.toString()
                 val user_post_image = p0.child("postimage").value.toString()
 
                 detailed_edit_post_text.text = user_post_text
@@ -54,6 +58,42 @@ class Detailed_user_post_Activity : AppCompatActivity() {
             }
 
         })
+
+
+        //Edit user text in Post
+        detailed_edit_post_button.setOnClickListener(object :View.OnClickListener{
+            override fun onClick(p0: View?) {
+                EditUserPost(user_post_text)
+            }
+
+        })
+    }
+
+    //Using ALert Dialog display the existing text in Edit Text.
+    //1. Performs two operations - "Update" and "Cancel"
+    private fun EditUserPost(userEditText: String?) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Edit your post")
+
+        val inputField = EditText(this)
+        inputField.setText(userEditText)
+        builder.setView(inputField)
+
+        builder.setPositiveButton("Update", object: DialogInterface.OnClickListener{
+            override fun onClick(p0: DialogInterface?, p1: Int) {
+                mDatabaseReference.child("description").setValue(inputField.text.toString())
+            }
+        })
+
+        builder.setNegativeButton("Cancel", object :DialogInterface.OnClickListener{
+            override fun onClick(dialog: DialogInterface?, p1: Int) {
+                dialog?.cancel()
+            }
+        })
+
+        builder.show()
+
+
     }
 
     companion object {

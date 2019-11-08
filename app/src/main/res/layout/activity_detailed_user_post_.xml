@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    tools:context=".Detailed_user_post_Activity">
+
+    <ImageView
+        android:id="@+id/detailed_edit_post_image"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="70dp"
+        app:srcCompat="@color/design_default_color_secondary_variant" />
+
+    <TextView
+        android:id="@+id/detailed_edit_post_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detailed_edit_post_image"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/user_post_description"
+        android:textColor="@color/colorWhite" />
+
+    <ImageButton
+        android:id="@+id/detailed_edit_post_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src ="@drawable/ic_edit_post"
+        android:layout_alignParentTop="true"
+        android:padding="10dp"
+        android:background="@color/colorBlack"
+        android:layout_toStartOf="@id/detailed_delete_post_button"/>
+
+    <ImageButton
+        android:id="@+id/detailed_delete_post_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src ="@drawable/ic_delete_post"
+        android:padding="10dp"
+        android:background="@color/colorBlack"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>

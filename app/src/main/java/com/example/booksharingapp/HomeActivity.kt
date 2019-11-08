@@ -70,7 +70,7 @@ class HomeActivity : AppCompatActivity() {
                     if (dataSnapshot.hasChild("firstName") && dataSnapshot.hasChild("lastName")) {
                         val profile_first_name = dataSnapshot.child("firstName").value.toString()
                         val profile_last_name = dataSnapshot.child("lastName").value.toString()
-                        val user_name = profile_first_name + " " + profile_last_name
+                        val user_name = profile_first_name + "" + profile_last_name
                         navig_header_user_name.text = user_name
                     }
 
@@ -122,10 +122,7 @@ class HomeActivity : AppCompatActivity() {
                 val placeid = getRef(position).key.toString()
 
                 mUserPostDBRef.child(placeid).addValueEventListener(object : ValueEventListener{
-                    override fun onCancelled(p0: DatabaseError) {
-
-                    }
-
+                    override fun onCancelled(p0: DatabaseError) { }
                     override fun onDataChange(p0: DataSnapshot) {
                             holder.post_fullName.text = model.fullname
                             holder.post_date.text = model.Date
@@ -133,6 +130,13 @@ class HomeActivity : AppCompatActivity() {
                             holder.post_text.text = model.description
                             Picasso.get().load(model.profileimage).into(holder.post_profile_image)
                             Picasso.get().load(model.postimage).into(holder.post_image)
+                    }
+                })
+                holder.itemView.setOnClickListener(object :View.OnClickListener{
+                    override fun onClick(p0: View?) {
+                        val detailedUserPostActivity = Intent(this@HomeActivity,Detailed_user_post_Activity::class.java)
+                        detailedUserPostActivity.putExtra("placeId",placeid)
+                        startActivity(detailedUserPostActivity)
                     }
 
                 })

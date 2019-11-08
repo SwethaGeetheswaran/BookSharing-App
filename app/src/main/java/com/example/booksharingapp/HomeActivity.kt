@@ -92,6 +92,7 @@ class HomeActivity : AppCompatActivity() {
                 val id = item.getItemId()
                 when (id) {
                     R.id.profile -> startActivity(user_profile_activity.getLaunchIntent(this@HomeActivity))
+                    R.id.find_friends ->startActivity(find_friends.getLaunchIntent(this@HomeActivity))
                     R.id.signout -> signOut()
                     else -> return true
                 }

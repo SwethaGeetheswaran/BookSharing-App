@@ -39,5 +39,6 @@
     <string name="hide_password">Hide Password</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
+    <string name="search_here">Search here..</string>
     <string name="user_post_description">User Post Description</string>
 </resources>

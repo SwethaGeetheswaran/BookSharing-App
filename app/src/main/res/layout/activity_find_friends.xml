@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    tools:context=".find_friends">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relative_layout"
+        android:layout_marginTop="15dp">
+
+        <EditText
+            android:layout_width="280dp"
+            android:layout_height="75dp"
+            android:id="@+id/search_friends"
+            android:layout_marginStart="21dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
+            android:ems="10"
+            android:hint="@string/search_here"
+            android:inputType="textMultiLine"
+            android:background="@drawable/borders"
+            android:padding="10dp"
+            android:textColorHint="@color/colorBlack"
+            android:textColor="@color/colorPurple"/>
+
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/search_friends_button"
+            android:layout_toEndOf="@id/search_friends"
+            android:src="@drawable/ic_search"
+            android:background="@color/colorBlack"
+            android:layout_marginTop="10dp"/>
+    </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/relative_layout"
+        android:layout_margin="10dp"
+        android:id="@+id/search_friends_result_list"/>
+</RelativeLayout>

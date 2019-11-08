@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -16,6 +17,9 @@ class Forgot_password_activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.forgot_password)
+        supportActionBar?.setTitle(R.string.forgot_password)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         mFirebaseAuth = FirebaseAuth.getInstance()
 
@@ -42,5 +46,12 @@ class Forgot_password_activity : AppCompatActivity() {
             Toast.makeText(this, "Enter Email", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> startActivity(MainActivity.getLaunchIntent(this))
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

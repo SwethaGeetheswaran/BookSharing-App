@@ -5,9 +5,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -21,6 +23,7 @@ class Detailed_user_post_Activity : AppCompatActivity() {
     private var user_post_text:String? = null
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabaseReference: DatabaseReference
+    private var TAG = "Detailed_user_post_Activity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,31 +45,46 @@ class Detailed_user_post_Activity : AppCompatActivity() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
+                if(p0.exists()){
                     user_post_text = p0.child("description").value.toString()
-                val user_post_image = p0.child("postimage").value.toString()
+                    val user_post_image = p0.child("postimage").value.toString()
 
-                detailed_edit_post_text.text = user_post_text
-                Picasso.get().load(user_post_image).fit().into(detailed_edit_post_image)
+                    detailed_edit_post_text.text = user_post_text
+                    Picasso.get().load(user_post_image).fit().into(detailed_edit_post_image)
 
-                val databaseUserId = p0.child("UID").value.toString()
+                    val databaseUserId = p0.child("UID").value.toString()
 
-                if(currentUserId.equals(databaseUserId)){
-                    detailed_edit_post_button.visibility = View.VISIBLE
-                    detailed_delete_post_button.visibility = View.VISIBLE
+                    if(currentUserId.equals(databaseUserId)){
+                        detailed_edit_post_button.visibility = View.VISIBLE
+                        detailed_delete_post_button.visibility = View.VISIBLE
+                    }
                 }
-
             }
 
         })
 
+        //Delete post
+        detailed_delete_post_button.setOnClickListener { object :View.OnClickListener{
+            override fun onClick(p0: View?) {
+                Log.v(TAG,"delete post in onclock")
+                deleteUserPost()
+            }
 
-        //Edit user text in Post
-        detailed_edit_post_button.setOnClickListener(object :View.OnClickListener{
+        } }
+
+            //Edit user text in Post
+        detailed_edit_post_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 EditUserPost(user_post_text)
             }
-
         })
+    }
+
+    private fun deleteUserPost(){
+        Log.v(TAG, "delete post")
+        mDatabaseReference.removeValue()
+        startActivity(HomeActivity.getLaunchIntent(this@Detailed_user_post_Activity))
+        Toast.makeText(this@Detailed_user_post_Activity, "Post has been deleted", Toast.LENGTH_SHORT).show()
     }
 
     //Using ALert Dialog display the existing text in Edit Text.

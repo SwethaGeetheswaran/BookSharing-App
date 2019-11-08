@@ -64,13 +64,13 @@ class Detailed_user_post_Activity : AppCompatActivity() {
         })
 
         //Delete post
-        detailed_delete_post_button.setOnClickListener { object :View.OnClickListener{
+        detailed_delete_post_button.setOnClickListener(object :View.OnClickListener{
             override fun onClick(p0: View?) {
-                Log.v(TAG,"delete post in onclock")
+                Log.v(TAG,"delete post first")
                 deleteUserPost()
             }
 
-        } }
+        })
 
             //Edit user text in Post
         detailed_edit_post_button.setOnClickListener(object : View.OnClickListener {

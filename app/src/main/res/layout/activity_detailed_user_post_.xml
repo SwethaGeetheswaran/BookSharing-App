@@ -43,5 +43,6 @@
         android:padding="10dp"
         android:background="@color/colorBlack"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:focusable="true"/>
 </RelativeLayout>

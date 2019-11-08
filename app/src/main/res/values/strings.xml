@@ -40,5 +40,7 @@
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="search_here">Search here..</string>
+    <string name="send_frd_request">Add Friend</string>
+    <string name="decline_frd_request">Decline Request</string>
     <string name="user_post_description">User Post Description</string>
 </resources>

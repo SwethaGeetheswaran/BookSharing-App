@@ -38,6 +38,32 @@
                 android:textSize="25sp"
                 android:layout_below="@id/user_profile"/>
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/send_frd_req_button"
+                android:layout_below="@+id/user_profile_name"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp"
+                android:text="@string/send_frd_request"
+                android:background="@color/colorLightBlue"
+                android:textColor="@color/colorWhite"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/remove_frd_req_button"
+                android:layout_below="@+id/send_frd_req_button"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/decline_frd_request"
+                android:background="@color/colorRed"
+                android:textColor="@color/colorWhite"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,7 +74,7 @@
                 android:textAllCaps="false"
                 android:textSize="20sp"
                 android:textColor="@color/colorPurple"
-                android:layout_below="@id/user_profile_name"/>
+                android:layout_below="@id/remove_frd_req_button"/>
 
         </RelativeLayout>
     </ScrollView>

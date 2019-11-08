@@ -86,6 +86,10 @@ class find_friends : AppCompatActivity() {
                 })
                 holder.itemView.setOnClickListener(object :View.OnClickListener{
                     override fun onClick(p0: View?) {
+                        val friendUID = getRef(position).key
+                        val friendsProfileIntent = Intent(this@find_friends, friends_profile_activity::class.java)
+                        friendsProfileIntent.putExtra("friendUID", friendUID)
+                        startActivity(friendsProfileIntent)
 
                     }
 

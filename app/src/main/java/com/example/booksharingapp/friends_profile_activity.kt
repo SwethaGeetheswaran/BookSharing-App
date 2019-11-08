@@ -2,24 +2,21 @@ package com.example.booksharingapp
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_user_profile_activity.*
-import android.graphics.BitmapFactory
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_user_profile_activity.*
 
-
-class user_profile_activity : AppCompatActivity() {
+class friends_profile_activity : AppCompatActivity() {
 
     private lateinit var mDatabaseReference: DatabaseReference
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var currentUserId:String
+    private lateinit var currentUserId: String
+    private var friendsUID: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,13 +25,19 @@ class user_profile_activity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        send_frd_req_button.visibility = View.INVISIBLE
-        remove_frd_req_button.visibility = View.INVISIBLE
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser!!.uid
-        mDatabaseReference= FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
+        mDatabaseReference =
+            FirebaseDatabase.getInstance().reference.child("Users")
 
-        mDatabaseReference.addValueEventListener(object :ValueEventListener{
+        friendsUID = intent.getStringExtra("friendUID").toString()
+
+        remove_frd_req_button.visibility = View.INVISIBLE
+        if(currentUserId.equals(friendsUID)){
+            send_frd_req_button.visibility = View.INVISIBLE
+        }
+
+        mDatabaseReference.child(friendsUID!!).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
 
@@ -47,17 +50,16 @@ class user_profile_activity : AppCompatActivity() {
 
                     val profile_image = dataSnapshot.child("ProfileImage").value.toString()
                     Picasso.get()
-                            .load(profile_image)
-                            .placeholder(R.drawable.ic_profile)
-                            .error(R.drawable.ic_profile_name)
-                            .fit()
-                            .into(user_profile)
+                        .load(profile_image)
+                        .placeholder(R.drawable.ic_profile)
+                        .error(R.drawable.ic_profile_name)
+                        .fit()
+                        .into(user_profile)
                 }
             }
 
         })
     }
-
 
     companion object {
         fun getLaunchIntent(from: Context) = Intent(from, user_profile_activity::class.java).apply {

@@ -74,6 +74,8 @@ class friends_profile_activity : AppCompatActivity() {
                     send_frd_req_button.isEnabled = false
                     if(currentState.equals("Unknown")){
                         sendFrdRequestToThatPerson()
+                    } else if(currentState.equals("sent")){
+                        cancelFriendRequest()
                     }
                 }
 
@@ -82,6 +84,30 @@ class friends_profile_activity : AppCompatActivity() {
 
         changeButtonTextfromSendToCancel()
 
+    }
+
+    //Cancel Friend Request
+    private fun cancelFriendRequest() {
+        mFrdRequestRef.child(currentUserId).child(friendsUID!!)
+            .removeValue()
+            .addOnCompleteListener(object :OnCompleteListener<Void>{
+                override fun onComplete(task: Task<Void>) {
+                    if(task.isSuccessful){
+                        mFrdRequestRef.child(friendsUID!!).child(currentUserId)
+                            .removeValue()
+                            .addOnCompleteListener(object : OnCompleteListener<Void>{
+                                override fun onComplete(task: Task<Void>) {
+                                    send_frd_req_button.isEnabled = true
+                                    currentState = "Unknown"
+                                    send_frd_req_button.setText(R.string.send_frd_request)
+                                }
+
+                            })
+                    }
+
+                }
+
+            })
     }
 
     // Change the text from "Send Request" to "Cancel Request" based on the request type

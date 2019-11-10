@@ -44,4 +44,6 @@
     <string name="decline_frd_request">Decline Request</string>
     <string name="user_post_description">User Post Description</string>
     <string name="cancel_request">Cancel Request</string>
+    <string name="accept_request">Accept Request</string>
+    <string name="unfriend_request">Unfriend Request</string>
 </resources>

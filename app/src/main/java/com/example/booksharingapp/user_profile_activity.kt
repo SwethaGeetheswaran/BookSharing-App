@@ -29,7 +29,7 @@ class user_profile_activity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         send_frd_req_button.visibility = View.INVISIBLE
-        remove_frd_req_button.visibility = View.INVISIBLE
+        decline_frd_req_button.visibility = View.INVISIBLE
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser!!.uid
         mDatabaseReference= FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)

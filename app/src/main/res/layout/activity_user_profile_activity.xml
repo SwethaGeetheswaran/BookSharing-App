@@ -54,7 +54,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/remove_frd_req_button"
+                android:id="@+id/decline_frd_req_button"
                 android:layout_below="@+id/send_frd_req_button"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
@@ -74,7 +74,7 @@
                 android:textAllCaps="false"
                 android:textSize="20sp"
                 android:textColor="@color/colorPurple"
-                android:layout_below="@id/remove_frd_req_button"/>
+                android:layout_below="@id/decline_frd_req_button"/>
 
         </RelativeLayout>
     </ScrollView>

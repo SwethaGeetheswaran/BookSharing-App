@@ -43,4 +43,5 @@
     <string name="send_frd_request">Add Friend</string>
     <string name="decline_frd_request">Decline Request</string>
     <string name="user_post_description">User Post Description</string>
+    <string name="cancel_request">Cancel Request</string>
 </resources>

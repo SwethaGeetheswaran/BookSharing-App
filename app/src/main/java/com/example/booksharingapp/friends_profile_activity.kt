@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
@@ -14,9 +16,11 @@ import kotlinx.android.synthetic.main.activity_user_profile_activity.*
 class friends_profile_activity : AppCompatActivity() {
 
     private lateinit var mDatabaseReference: DatabaseReference
+    private lateinit var mFrdRequestRef: DatabaseReference
     private lateinit var mAuth: FirebaseAuth
     private lateinit var currentUserId: String
     private var friendsUID: String? = null
+    private var currentState: String? = "Unknown"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +31,8 @@ class friends_profile_activity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser!!.uid
-        mDatabaseReference =
-            FirebaseDatabase.getInstance().reference.child("Users")
+        mDatabaseReference = FirebaseDatabase.getInstance().reference.child("Users")
+        mFrdRequestRef= FirebaseDatabase.getInstance().reference.child("FriendRequest")
 
         friendsUID = intent.getStringExtra("friendUID").toString()
 
@@ -37,6 +41,8 @@ class friends_profile_activity : AppCompatActivity() {
             send_frd_req_button.visibility = View.INVISIBLE
         }
 
+
+        // TO display Friend's profile.
         mDatabaseReference.child(friendsUID!!).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
@@ -59,6 +65,67 @@ class friends_profile_activity : AppCompatActivity() {
             }
 
         })
+
+        // To send friend request
+        if(!currentUserId.equals(friendsUID)){
+            send_frd_req_button.setOnClickListener(object: View.OnClickListener{
+                override fun onClick(p0: View?) {
+
+                    send_frd_req_button.isEnabled = false
+                    if(currentState.equals("Unknown")){
+                        sendFrdRequestToThatPerson()
+                    }
+                }
+
+            })
+        }
+
+        changeButtonTextfromSendToCancel()
+
+    }
+
+    // Change the text from "Send Request" to "Cancel Request" based on the request type
+    private fun changeButtonTextfromSendToCancel() {
+        mFrdRequestRef.child(currentUserId).addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(dataSnapshot.hasChild(friendsUID!!)) {
+                    val request_type = dataSnapshot.child(friendsUID!!).child("request_type").value.toString()
+
+                    if(request_type.equals("sent")){
+                            send_frd_req_button.setText(R.string.cancel_request)
+                            currentState = "sent"
+                    }
+                }
+
+            }
+
+        })
+    }
+
+    private fun sendFrdRequestToThatPerson() {
+        mFrdRequestRef.child(currentUserId).child(friendsUID!!)
+            .child("request_type").setValue("sent")
+            .addOnCompleteListener(object :OnCompleteListener<Void>{
+                override fun onComplete(task: Task<Void>) {
+                        if(task.isSuccessful){
+                            mFrdRequestRef.child(friendsUID!!).child(currentUserId)
+                                .child("request_type").setValue("received")
+                                .addOnCompleteListener(object : OnCompleteListener<Void>{
+                                    override fun onComplete(task: Task<Void>) {
+                                        send_frd_req_button.isEnabled = true
+                                        currentState = "request_Sent"
+                                        send_frd_req_button.setText(R.string.cancel_request)
+                                    }
+
+                                })
+                        }
+
+                }
+
+            })
     }
 
     companion object {

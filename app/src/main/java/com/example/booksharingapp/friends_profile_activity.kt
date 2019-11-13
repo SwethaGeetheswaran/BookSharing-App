@@ -90,16 +90,21 @@ class friends_profile_activity : AppCompatActivity() {
                         decline_frd_req_button.visibility = View.VISIBLE
                         decline_frd_req_button.isEnabled = true
                         acceptFriendRequest()
-                        decline_frd_req_button.setOnClickListener(object : View.OnClickListener{
-                            override fun onClick(p0: View?) {
-                                CancelFriendRequest(mFrdRequestRef)
-                            }
-
-                        })
+                        decline_frd_req_button.visibility = View.INVISIBLE
+                        decline_frd_req_button.isEnabled = false
                     }
                     if(currentState.equals("friends")){
                         CancelFriendRequest(mFriendsRef) // Unfriend
                     }
+                }
+
+            })
+
+            decline_frd_req_button.setOnClickListener(object : View.OnClickListener{
+                override fun onClick(p0: View?) {
+                    CancelFriendRequest(mFrdRequestRef)
+                    decline_frd_req_button.visibility = View.INVISIBLE
+                    decline_frd_req_button.isEnabled = false
                 }
 
             })

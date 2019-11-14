@@ -26,6 +26,7 @@ class friends_profile_activity : AppCompatActivity() {
     private var friendsUID: String? = null
     private var currentState: String? = "Unknown"
     private var savecurrentdate : String? = null
+    private  var TAG = "friends_profile_activity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class friends_profile_activity : AppCompatActivity() {
 
 
         friendsUID = intent.getStringExtra("friendUID").toString()
-
+        Log.v(TAG,"friendUID: " +friendsUID)
 
         // TO display Friend's profile.
         mDatabaseReference.child(friendsUID!!).addValueEventListener(object : ValueEventListener {
@@ -66,6 +67,18 @@ class friends_profile_activity : AppCompatActivity() {
                 }
             }
 
+        })
+
+        mFriendsRef.child(currentUserId).child(friendsUID!!).addListenerForSingleValueEvent(object  : ValueEventListener{
+            override fun onCancelled(databaseError: DatabaseError) {
+                throw databaseError.toException()
+            }
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.exists()) {
+                    send_frd_req_button.setText(R.string.unfriend_request)
+                    send_frd_req_button.isEnabled = true
+                }
+            }
         })
 
         decline_frd_req_button.visibility = View.INVISIBLE
@@ -187,7 +200,8 @@ class friends_profile_activity : AppCompatActivity() {
     // Change the text from "Send Request" to "Cancel Request" based on the request type
     private fun changeButtonTextfromSendToCancel() {
         mFrdRequestRef.child(currentUserId).addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
+            override fun onCancelled(databaseError: DatabaseError) {
+                throw databaseError.toException()
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -205,8 +219,8 @@ class friends_profile_activity : AppCompatActivity() {
                     }else{
                         mFriendsRef.child(currentUserId)
                             .addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onCancelled(p0: DatabaseError) {
-
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    throw databaseError.toException()
                                 }
 
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {

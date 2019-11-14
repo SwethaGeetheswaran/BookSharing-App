@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -26,6 +28,7 @@ class DisplayFriendsListActivity : AppCompatActivity() {
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
     private lateinit var currentUserID:String
+    private  var TAG = "DisplayFriendsListActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +86,28 @@ class DisplayFriendsListActivity : AppCompatActivity() {
                 })
                 holder.itemView.setOnClickListener(object :View.OnClickListener{
                     override fun onClick(p0: View?) {
+                        val options = arrayOf<CharSequence>("View " + holder.user_fullName.text +"'s Profile", "Send a message", "Cancel")
 
+                        val builder = AlertDialog.Builder(this@DisplayFriendsListActivity)
+                        builder.setTitle("Select Options")
+
+                        builder.setItems(options, { dialog, item ->
+                            if (options[item] == "View " + holder.user_fullName.text +"'s Profile") {
+                                val displayFriendsProfile = Intent (this@DisplayFriendsListActivity, friends_profile_activity::class.java)
+                                displayFriendsProfile.putExtra("friendUID", placeid)
+                                Log.v(TAG,"friendUID: " +placeid)
+                                startActivity(displayFriendsProfile)
+
+                            } else if (options[item] == "Send a message") {
+                                val sendMessageToFriends = Intent (this@DisplayFriendsListActivity, messageActivity::class.java)
+                                sendMessageToFriends.putExtra("friendUID", placeid)
+                                startActivity(sendMessageToFriends)
+
+                            } else if (options[item] == "Cancel") {
+                                dialog.dismiss()
+                            }
+                        })
+                        builder.show()
                     }
 
                 })

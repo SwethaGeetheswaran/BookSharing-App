@@ -16,7 +16,6 @@
         android:layout_alignParentTop="true"
         android:textColor="@color/colorWhite"
         android:textStyle="bold"
-        android:textAlignment="center"
         android:layout_centerHorizontal="true"/>
 
     <androidx.recyclerview.widget.RecyclerView

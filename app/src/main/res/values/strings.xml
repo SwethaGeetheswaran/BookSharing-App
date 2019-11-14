@@ -46,4 +46,6 @@
     <string name="cancel_request">Cancel Request</string>
     <string name="accept_request">Accept Request</string>
     <string name="unfriend_request">Unfriend</string>
+    <string name="friends_list">Friend\'s List</string>
+    <string name="user_write_message_text">Write your message here..</string>
 </resources>

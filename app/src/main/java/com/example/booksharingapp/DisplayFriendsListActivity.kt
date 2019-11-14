@@ -34,15 +34,15 @@ class DisplayFriendsListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_friends_list)
 
-        supportActionBar?.setTitle(R.string.friends)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
         mDatabase = FirebaseDatabase.getInstance()
         mAuth = FirebaseAuth.getInstance()
         currentUserID = mAuth.currentUser!!.uid
         mUsersDbRef = mDatabase.reference.child("Users")
         mFriendsDbRef = mDatabase.reference.child("Friends").child(currentUserID)
+
+        supportActionBar?.setTitle(R.string.friends_list)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         display_friends_list_recycler_id.setHasFixedSize(true)
         val linearLayoutManager = LinearLayoutManager(this)
@@ -101,6 +101,7 @@ class DisplayFriendsListActivity : AppCompatActivity() {
                             } else if (options[item] == "Send a message") {
                                 val sendMessageToFriends = Intent (this@DisplayFriendsListActivity, messageActivity::class.java)
                                 sendMessageToFriends.putExtra("friendUID", placeid)
+                                sendMessageToFriends.putExtra("username", holder.user_fullName.text)
                                 startActivity(sendMessageToFriends)
 
                             } else if (options[item] == "Cancel") {

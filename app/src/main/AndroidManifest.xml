@@ -27,8 +27,9 @@
         <activity android:name=".user_profile_activity" />
         <activity android:name=".user_post_activity" />
         <activity android:name=".Detailed_user_post_Activity" />
-        <activity android:name=".find_friends"/>
-        <activity android:name=".friends_profile_activity"/>
+        <activity android:name=".find_friends" />
+        <activity android:name=".friends_profile_activity" />
+        <activity android:name=".DisplayFriendsListActivity"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

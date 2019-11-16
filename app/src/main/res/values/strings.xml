@@ -48,4 +48,6 @@
     <string name="unfriend_request">Unfriend</string>
     <string name="friends_list">Friend\'s List</string>
     <string name="user_write_message_text">Write your message here..</string>
+    <string name="receiver_text">receiver text</string>
+    <string name="sender_text">sender text</string>
 </resources>

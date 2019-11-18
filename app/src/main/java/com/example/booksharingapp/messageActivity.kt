@@ -91,6 +91,7 @@ class messageActivity : AppCompatActivity() {
                     user_msg_hashMap.put("date", save_post_date)
                     user_msg_hashMap.put("time", save_post_time)
                     user_msg_hashMap.put("message", user_message.text.toString())
+                    user_msg_hashMap.put("to",friendsUID!!)
 
                     val entire_user_msg_hashMap = HashMap<String,Any>()
                     entire_user_msg_hashMap.put(msg_sender_Id + "/" + msg_ref_key_id , user_msg_hashMap)

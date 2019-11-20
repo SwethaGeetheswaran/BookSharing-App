@@ -61,7 +61,7 @@ class recyclerView_message_activity : AppCompatActivity() {
                 val profile_first_name = dataSnapshot.child("firstName").value.toString()
                 val profile_last_name = dataSnapshot.child("lastName").value.toString()
                 val user_name = profile_first_name + "" + profile_last_name
-                val app_bar_username = user_name + R.string.messages
+                val app_bar_username = user_name + "'s Messages"
                 message_user_name_id.text = app_bar_username
 
                 val profile_image = dataSnapshot.child("ProfileImage").value.toString()

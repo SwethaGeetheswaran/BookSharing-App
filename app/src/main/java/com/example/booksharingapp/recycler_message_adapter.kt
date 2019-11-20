@@ -1,5 +1,7 @@
 package com.example.booksharingapp
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ class recycler_message_adapter (var messageList : List<Messages>) : RecyclerView
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mDatabaseReference: DatabaseReference
+    var userId:String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
 
@@ -29,9 +32,17 @@ class recycler_message_adapter (var messageList : List<Messages>) : RecyclerView
 
         mDatabase = FirebaseDatabase.getInstance()
 
+        val curUserId = mAuth.currentUser?.uid
         val messages = messageList.get(position)
         val fromUserId = messages.from
-        mDatabaseReference = mDatabase.reference.child("Users").child(fromUserId!!)
+
+        if(curUserId.equals(fromUserId)) {
+            userId = messages.to
+        } else {
+            userId = messages.from
+        }
+
+        mDatabaseReference = mDatabase.reference.child("Users").child(userId!!)
         mDatabaseReference.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(databaseError: DatabaseError) {
                 throw databaseError.toException()
@@ -54,6 +65,16 @@ class recycler_message_adapter (var messageList : List<Messages>) : RecyclerView
 
         })
             holder.receiver_text_msg.setText(messages.message)
+
+        holder.itemView.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                val detailedMessageActivity = Intent(p0?.context,messageActivity::class.java)
+                detailedMessageActivity.putExtra("friendUID",userId)
+                detailedMessageActivity.putExtra("username",holder.receiver_text_name.text.toString())
+                p0?.context?.startActivity(detailedMessageActivity)
+            }
+
+        })
     }
 
     class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view){

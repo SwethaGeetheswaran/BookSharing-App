@@ -29,7 +29,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
 
     //Firebase auth
     implementation 'com.google.firebase:firebase-core:17.2.1'
@@ -40,10 +40,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.1'
 
     //Navigation Drawer
-    implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
 
     //Biometrics- Fingerprint
-    implementation 'androidx.biometric:biometric:1.0.0-rc02'
+    implementation 'androidx.biometric:biometric:1.0.0'
+
+    implementation 'androidx.cardview:cardview:1.0.0'
     //Firebase- Database
     implementation 'com.google.firebase:firebase-database:19.2.0'
     implementation 'com.google.firebase:firebase-storage:19.1.0'

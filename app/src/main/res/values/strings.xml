@@ -51,4 +51,13 @@
     <string name="receiver_text">receiver text</string>
     <string name="sender_text">sender text</string>
     <string name="messages">\'s Messages</string>
+    <string name="books_read">Books Read</string>
+    <string name="books_share">Books Share</string>
+    <string name="edit"><u>Edit</u></string>
+    <string name="User_email">Email</string>
+    <string name="change_password"><u>Change Password</u></string>
+    <string name="save_text">Save</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="zero">0</string>
+
 </resources>

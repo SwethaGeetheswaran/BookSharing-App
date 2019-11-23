@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/books_background"
+    android:orientation="vertical"
     tools:context=".user_profile_activity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="300dp"
+            android:id="@+id/relative_layout1"
+            android:background="@color/colorGreyShade">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_profile"
-                android:layout_width="230dp"
-                android:layout_height="230dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="30dp"
                 android:src="@drawable/ic_profile"
                 app:civ_border_color="#000000"
                 app:civ_border_width="4dp" />
@@ -32,19 +38,120 @@
                 android:id="@+id/user_profile_name"
                 android:text="@string/user_name"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:textSize="25sp"
+                android:textColor="@color/colorWhite"
                 android:layout_below="@id/user_profile"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/about_myself"
+                android:text="@string/about_myself"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:textColor="@color/colorWhite"
+                android:layout_below="@id/user_profile_name"/>
+        </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_view_layout"
+                android:layout_width="350dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="275dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/friends"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/friends_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:text="@string/zero"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/books_read"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/books_read_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:text="@string/zero"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/books_share"
+                            android:textSize="15sp"/>
+                        <TextView
+                            android:id="@+id/books_share_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/zero"
+                            android:textStyle="bold"
+                            android:paddingTop="10dp"
+                            android:textSize="20sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/card_view_layout">
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/send_frd_req_button"
-                android:layout_below="@+id/user_profile_name"
                 android:layout_centerHorizontal="true"
-                android:padding="10dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/send_frd_request"
                 android:background="@color/colorLightBlue"
                 android:textColor="@color/colorWhite"
@@ -63,19 +170,8 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="13sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/about_myself"
-                android:text="@string/about_myself"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                android:textColor="@color/colorPurple"
-                android:layout_below="@id/decline_frd_req_button"/>
-
         </RelativeLayout>
+
+    </RelativeLayout>
     </ScrollView>
-</RelativeLayout>
+</LinearLayout>

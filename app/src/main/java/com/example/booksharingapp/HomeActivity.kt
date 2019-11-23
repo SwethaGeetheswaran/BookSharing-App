@@ -91,6 +91,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onNavigationItemSelected(item: MenuItem): Boolean {
                 val id = item.getItemId()
                 when (id) {
+                    R.id.settings -> startActivity(editProfileActivity.getLaunchIntent(this@HomeActivity))
                     R.id.message -> startActivity(recyclerView_message_activity.getLaunchIntent(this@HomeActivity))
                     R.id.friends -> startActivity(DisplayFriendsListActivity.getLaunchIntent(this@HomeActivity))
                     R.id.profile -> startActivity(user_profile_activity.getLaunchIntent(this@HomeActivity))

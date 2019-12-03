@@ -75,7 +75,7 @@ class user_post_activity : AppCompatActivity() {
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     )
-                    startActivityForResult(pickPhoto, 1)//one can be replaced with any action code
+                    startActivityForResult(pickPhoto, 1)
 
                 } else if (options[item] == "Cancel") {
                     dialog.dismiss()

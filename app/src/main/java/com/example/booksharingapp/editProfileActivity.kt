@@ -1,21 +1,32 @@
 package com.example.booksharingapp
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.RelativeLayout
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_edit_profile.*
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.HashMap
 
 class editProfileActivity : AppCompatActivity() {
 
@@ -27,6 +38,9 @@ class editProfileActivity : AppCompatActivity() {
     private lateinit var lastName:String
     private lateinit var password:String
     private lateinit var mUsersDbRef: DatabaseReference
+    private lateinit var mUserStorageRefs : StorageReference
+    var ImageUri : Uri? = null
+    private val mGalleryNo = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +53,7 @@ class editProfileActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         currentUserID = mAuth.currentUser!!.uid
         mUsersDbRef = mDatabase.reference.child("Users").child(currentUserID)
+        mUserStorageRefs = FirebaseStorage.getInstance().reference.child("UserProfileImages")
 
 
         mUsersDbRef.addValueEventListener(object :ValueEventListener{
@@ -92,6 +107,66 @@ class editProfileActivity : AppCompatActivity() {
             startChangePassIntent.putExtra("password", password)
             startActivity(startChangePassIntent)
         }
+
+        edit_profile_image.setOnClickListener {
+            val galleryIntent = Intent()
+            galleryIntent.action = Intent.ACTION_PICK
+            galleryIntent.type = "image/*"
+            startActivityForResult(galleryIntent, mGalleryNo)
+        }
+
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == mGalleryNo && resultCode == Activity.RESULT_OK && data != null)
+        {
+            CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(1,1)
+                .start(this)
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == Activity.RESULT_OK ) {
+                    ImageUri = result.uri
+                    Picasso.get()
+                        .load(ImageUri)
+                        .placeholder(R.drawable.ic_profile)
+                        .error(R.drawable.ic_profile_name)
+                        .fit()
+                        .into(edit_profile_image)
+                    uploadProfileImagetoFirebase(ImageUri)
+                }
+            }
+
+
+    }
+
+
+    fun uploadProfileImagetoFirebase(resultUri : Uri?){
+        if (resultUri == null) {
+            Log.v(TAG, "post_it_image")
+            val snackbar = Snackbar
+                .make(relative_layout_head, "Please select an image", Snackbar.LENGTH_LONG)
+                .setAction("OK", object : View.OnClickListener {
+                    override fun onClick(view: View) {}
+                })
+            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.show()
+        } else {
+            val filePath: StorageReference =
+                mUserStorageRefs.child(UUID.randomUUID().toString()+ ".jpg")
+            filePath.putFile(ImageUri!!).addOnSuccessListener {
+                Log.d(TAG,"Successfully uploaded image: ${it.metadata?.path}")
+                filePath.downloadUrl.addOnSuccessListener {
+                    mUsersDbRef.child("ProfileImage").setValue(it.toString())
+                }
+            }
+        }
+
+
     }
 
     private fun addViewsToEditAboutMyself() {
@@ -229,12 +304,12 @@ class editProfileActivity : AppCompatActivity() {
                 val edited_username = edited_firstName + edited_lastName
                 mUsersDbRef.updateChildren(userinfo_updates_hashMap)
                     .addOnSuccessListener {
-                        edit_profile_username_2.setText(edited_username)
-                        edit_profile_username_2.visibility = View.VISIBLE
-                        edit_profile_relative_layout.removeView(save_button)
-                        edit_profile_relative_layout.removeView(edit_first_name)
-                        edit_profile_relative_layout.removeView(edit_last_name)
-                        edit_profile_relative_layout.removeView(cancel_button)
+                                edit_profile_username_2.setText(edited_username)
+                                edit_profile_username_2.visibility = View.VISIBLE
+                                edit_profile_relative_layout.removeView(save_button)
+                                edit_profile_relative_layout.removeView(edit_first_name)
+                                edit_profile_relative_layout.removeView(edit_last_name)
+                                edit_profile_relative_layout.removeView(cancel_button)
                     }
                     .addOnFailureListener {
                         Log.v(TAG, it.printStackTrace().toString())

@@ -3,6 +3,7 @@ package com.example.booksharingapp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
@@ -128,12 +129,32 @@ class HomeActivity : AppCompatActivity() {
                 mUserPostDBRef.child(placeid).addValueEventListener(object : ValueEventListener{
                     override fun onCancelled(p0: DatabaseError) { }
                     override fun onDataChange(p0: DataSnapshot) {
-                            holder.post_fullName.text = model.fullname
+                            //holder.post_fullName.text = model.fullname
                             holder.post_date.text = model.Date
                             holder.post_time.text = model.Time
                             holder.post_text.text = model.description
-                            Picasso.get().load(model.profileimage).into(holder.post_profile_image)
+                            //Picasso.get().load(model.profileimage).into(holder.post_profile_image)
                             Picasso.get().load(model.postimage).into(holder.post_image)
+                    }
+                })
+                mDatabaseReference.child(model.UID!!).addValueEventListener(object :ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) { }
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            if (dataSnapshot.hasChild("firstName") && dataSnapshot.hasChild("lastName")) {
+                                val profile_first_name = dataSnapshot.child("firstName").value.toString()
+                                val profile_last_name = dataSnapshot.child("lastName").value.toString()
+                                val user_name = profile_first_name + " " + profile_last_name
+                                holder.post_fullName.text = user_name
+                            }
+                            if (dataSnapshot.hasChild("ProfileImage")) {
+                                val profile_image = dataSnapshot.child("ProfileImage").value.toString()
+                                Picasso.get().load(profile_image).placeholder(R.drawable.ic_profile)
+                                    .into(holder.post_profile_image)
+                            }else{
+                                Toast.makeText(this@HomeActivity,"Profile does not exists.",Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 })
                 holder.itemView.setOnClickListener(object :View.OnClickListener{

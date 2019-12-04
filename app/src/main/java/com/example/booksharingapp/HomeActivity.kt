@@ -3,7 +3,6 @@ package com.example.booksharingapp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
@@ -92,6 +91,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onNavigationItemSelected(item: MenuItem): Boolean {
                 val id = item.getItemId()
                 when (id) {
+                    R.id.books_collection -> startActivity(BooksCollection.getLaunchIntent(this@HomeActivity))
                     R.id.settings -> startActivity(editProfileActivity.getLaunchIntent(this@HomeActivity))
                     R.id.message -> startActivity(recyclerView_message_activity.getLaunchIntent(this@HomeActivity))
                     R.id.friends -> startActivity(DisplayFriendsListActivity.getLaunchIntent(this@HomeActivity))
@@ -184,7 +184,7 @@ class HomeActivity : AppCompatActivity() {
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.action_bar_menu, menu)
+        inflater.inflate(R.menu.add_bookpost_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

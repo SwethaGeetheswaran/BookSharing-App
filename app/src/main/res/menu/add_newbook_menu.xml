@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.booksharingapp.Book_post_activity">
+
+    <item
+        android:id="@+id/user_profile_image"
+        app:showAsAction="ifRoom"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_profile"/>
+
+    <item
+        android:id="@+id/add_new_book"
+        android:title="@string/add"
+        android:icon="@drawable/ic_add_post"
+        app:showAsAction="always" />
+</menu>

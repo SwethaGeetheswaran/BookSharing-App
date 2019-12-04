@@ -34,6 +34,10 @@
         <activity android:name=".recyclerView_message_activity" />
         <activity android:name=".editProfileActivity" />
         <activity android:name=".changePassword" />
+        <activity android:name=".BooksCollection" />
+        <activity android:name=".AddBooksActivity"
+                android:label="AddBooksActivity"
+                android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

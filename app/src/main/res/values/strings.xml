@@ -64,5 +64,17 @@
     <string name="new_password">New Password</string>
     <string name="describe_yourself">Describe yourself</string>
     <string name="retype_new_password">Retype New Password</string>
-
+    <string name="book">Your Books Collection</string>
+    <string name="add_book">Add books</string>
+    <string name="add">Add</string>
+    <string name="image">Image</string>
+    <string name="camera">Camer</string>
+    <string name="book_name"><i>Enter the Book name</i></string>
+    <string name="author_name"><i>Enter the Author\'s name</i></string>
+    <string name="user_book_choice"><i>Choose one of the options below</i></string>
+    <string-array name="user_book_choice_list">
+        <item>Add to Books Read</item>
+        <item>Add to Books Share</item>
+        <item>Both</item>
+    </string-array>
 </resources>

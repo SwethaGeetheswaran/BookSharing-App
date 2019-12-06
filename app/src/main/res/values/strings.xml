@@ -68,13 +68,9 @@
     <string name="add_book">Add books</string>
     <string name="add">Add</string>
     <string name="image">Image</string>
-    <string name="camera">Camer</string>
-    <string name="book_name"><i>Enter the Book name</i></string>
-    <string name="author_name"><i>Enter the Author\'s name</i></string>
-    <string name="user_book_choice"><i>Choose one of the options below</i></string>
-    <string-array name="user_book_choice_list">
-        <item>Add to Books Read</item>
-        <item>Add to Books Share</item>
-        <item>Both</item>
-    </string-array>
+    <string name="camera">Camera</string>
+    <string name="search_book"><i>Search any Book here</i></string>
+    <string name="no_internet">NO INTERNET</string>
+    <string name="google_books_text">Add books using Google Books API</string>
+    <string name="no_data"><b>NO DATA</b></string>
 </resources>

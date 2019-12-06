@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,93 +7,58 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/post_books_appbar_layout">
 
-    <RelativeLayout
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content">
+    <ProgressBar
+        android:id="@+id/books_progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchBar"
+        android:layout_marginTop="100dp"/>
 
-        <RelativeLayout
-            android:id="@+id/inner_relative_layout"
+    <TextView
+        android:id="@+id/empty_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchBar"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="20sp"
+        tools:text="@string/no_internet"
+        android:layout_marginTop="80dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="85dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/searchBox"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_width="wrap_content">
+            android:hint="@string/search_book"
+            android:inputType="text"
+            android:layout_weight="1"/>
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginTop="30dp"
-                android:layout_alignParentTop="true"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/searchButton"
+            android:layout_width="50dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_book_search"
+            android:onClick="searchButton"
+            android:padding="7dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
-            <EditText
-                android:id="@+id/book_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_below="@id/spinner"
-                android:inputType="text"
-                android:hint="@string/book_name" />
-            <EditText
-                android:id="@+id/book_author"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginTop="5dp"
-                android:hint="@string/author_name"
-                android:inputType="text"
-                android:layout_below="@id/book_title"/>
-            <ImageView
-                android:id="@+id/book_image"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_margin="15dp"
-                android:src="@color/colorWhite"
-                android:contentDescription="@string/image"
-                android:layout_below="@id/book_author"/>
-        </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:layout_below="@+id/searchBar"
+        android:scrollbars="vertical" />
 
-        <View
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGrey"
-            android:layout_below="@id/inner_relative_layout"
-            android:layout_margin="15dp"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_below="@id/divider1">
-
-            <ImageView
-                android:id="@+id/camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:layout_alignParentStart="true"
-                android:contentDescription="@string/camera"
-                android:paddingStart="150dp"
-                android:paddingEnd="20dp"
-                android:src="@drawable/ic_camera" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:contentDescription="@string/image"
-                android:paddingStart="5dp"
-                android:paddingEnd="100dp"
-                android:layout_toEndOf="@id/camera"
-                android:padding="15dp"
-                android:src="@drawable/ic_image" />
-        </RelativeLayout>
-    </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+</RelativeLayout>
 

@@ -34,7 +34,7 @@ dependencies {
 
     //Firebase auth
     implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
 
     //Firebase - service auth
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
@@ -54,6 +54,8 @@ dependencies {
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     //Picasso library
     implementation 'com.squareup.picasso:picasso:2.71828'
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     // Firebase recycler
     implementation 'com.firebaseui:firebase-ui-database:6.0.2'
     testImplementation 'junit:junit:4.12'

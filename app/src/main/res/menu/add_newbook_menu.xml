@@ -8,10 +8,4 @@
         app:showAsAction="ifRoom"
         android:title="@string/profile"
         android:icon="@drawable/ic_profile"/>
-
-    <item
-        android:id="@+id/add_new_book"
-        android:title="@string/add"
-        android:icon="@drawable/ic_add_post"
-        app:showAsAction="always" />
 </menu>

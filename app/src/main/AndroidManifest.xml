@@ -13,8 +13,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".launcherScreen_activity"
+              android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,14 +39,17 @@
         <activity android:name=".editProfileActivity" />
         <activity android:name=".changePassword" />
         <activity android:name=".BooksCollection" />
-        <activity android:name=".GoogleBookWebView"/>
+        <activity android:name=".GoogleBookWebView" />
         <activity
             android:name=".AddBooksActivity"
             android:label="AddBooksActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

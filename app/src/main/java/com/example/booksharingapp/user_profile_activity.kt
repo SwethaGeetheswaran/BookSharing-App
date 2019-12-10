@@ -7,19 +7,24 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_user_profile_activity.*
-import android.graphics.BitmapFactory
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 
 
 class user_profile_activity : AppCompatActivity() {
 
     private lateinit var mDatabaseReference: DatabaseReference
+    private lateinit var mBooksReadDbRef: DatabaseReference
     private lateinit var mAuth: FirebaseAuth
     private lateinit var currentUserId:String
+    var addReadBooksArrayList : ArrayList<allUsersBooksList> = ArrayList()
+    var key: String? = null
+    private  var TAG = "User_profile_activity"
+    lateinit var recyclerBooksAdapter: booksRead_fragment_adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +38,17 @@ class user_profile_activity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser!!.uid
         mDatabaseReference= FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
+        mBooksReadDbRef = FirebaseDatabase.getInstance().reference.child("BooksRead")
+
+        recyclerBooksAdapter= booksRead_fragment_adapter(addReadBooksArrayList,null)
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.reverseLayout = true
+        linearLayoutManager.stackFromEnd = true
+        display_books_read_list.setHasFixedSize(true)
+        display_books_read_list.layoutManager = linearLayoutManager
+        display_books_read_list.adapter = recyclerBooksAdapter
+        display_books_read_list.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
 
         mDatabaseReference.addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
@@ -56,8 +72,51 @@ class user_profile_activity : AppCompatActivity() {
             }
 
         })
+
+        mBooksReadDbRef.child(currentUserId).addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                throw p0.toException()
+            }
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.exists()){
+                    getKeyforFetchingBooks()
+                    display_books_read_list.visibility = View.VISIBLE
+                } else {
+                    display_books_read_list.visibility = View.GONE
+                }
+            }
+
+        })
     }
 
+    fun getKeyforFetchingBooks() {
+        mBooksReadDbRef.child(currentUserId).addValueEventListener(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) { throw p0.toException() }
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val children = dataSnapshot.children
+                println("count: "+dataSnapshot.children.count().toString())
+                children.forEach {
+                    key = it.key
+                    Log.v(TAG,"key: " + key)
+                    fetchBooksForUser(key!!)
+                }
+
+            }
+        })
+    }
+
+    private fun fetchBooksForUser(key: String) {
+        mBooksReadDbRef.child(currentUserId).child(key).addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) { }
+            override fun onDataChange(p0: DataSnapshot) {
+                val addReadBooksList = p0.getValue(allUsersBooksList::class.java)
+                addReadBooksArrayList.add(addReadBooksList!!)
+                recyclerBooksAdapter = booksRead_fragment_adapter(addReadBooksArrayList,key)
+                display_books_read_list.adapter = recyclerBooksAdapter
+            }
+        })
+
+    }
 
     companion object {
         fun getLaunchIntent(from: Context) = Intent(from, user_profile_activity::class.java).apply {

@@ -91,7 +91,7 @@ class DisplayFriendsListActivity : AppCompatActivity() {
                         val builder = AlertDialog.Builder(this@DisplayFriendsListActivity)
                         builder.setTitle("Select Options")
 
-                        builder.setItems(options, { dialog, item ->
+                        builder.setItems(options) { dialog, item ->
                             if (options[item] == "View " + holder.user_fullName.text +"'s Profile") {
                                 val displayFriendsProfile = Intent (this@DisplayFriendsListActivity, friends_profile_activity::class.java)
                                 displayFriendsProfile.putExtra("friendUID", placeid)
@@ -107,7 +107,7 @@ class DisplayFriendsListActivity : AppCompatActivity() {
                             } else if (options[item] == "Cancel") {
                                 dialog.dismiss()
                             }
-                        })
+                        }
                         builder.show()
                     }
 

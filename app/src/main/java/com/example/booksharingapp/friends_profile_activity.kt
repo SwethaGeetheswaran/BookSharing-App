@@ -42,7 +42,7 @@ class friends_profile_activity : AppCompatActivity() {
         mFriendsRef= FirebaseDatabase.getInstance().reference.child("Friends")
 
 
-        friendsUID = intent.getStringExtra("friendUID").toString()
+        friendsUID = intent?.getStringExtra("friendUID").toString()
         Log.v(TAG,"friendUID: " +friendsUID)
 
         // TO display Friend's profile.

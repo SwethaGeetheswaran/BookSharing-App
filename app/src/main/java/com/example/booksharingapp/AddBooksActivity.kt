@@ -108,7 +108,7 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
         }
 
 
-        val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
+        val mLayoutManager = GridLayoutManager(this, 2)
         recycler_view.setLayoutManager(mLayoutManager)
         recycler_view.addItemDecoration(GridSpacingItemDecoration(2, dpToPx(10), true))
         recycler_view.setItemAnimator(DefaultItemAnimator())

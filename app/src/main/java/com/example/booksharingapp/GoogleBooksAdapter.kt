@@ -50,30 +50,59 @@ class GoogleBooksAdapter(var booksList : List<GoogleBooks>) :RecyclerView.Adapte
 
         holder.add.setOnClickListener(object :View.OnClickListener{
             override fun onClick(p0: View?) {
+                val book = booksList.get(position)
                 val options = arrayOf<CharSequence>("Add to Books Read Collection", "Add to Books Share Collection","Both","Cancel")
 
                 val builder = AlertDialog.Builder(p0?.context!!)
                 builder.setTitle("Choose an option to this book")
 
-                builder.setItems(options, { dialog, item ->
+                builder.setItems(options) { dialog, item ->
                     if (options[item] == "Add to Books Read Collection") {
+                        booksReadIntent(p0.context, book)
                         Toast.makeText(p0.context!!, "1",Toast.LENGTH_SHORT).show()
-
                     } else if (options[item] == "Add to Books Share Collection") {
-                        Toast.makeText(p0.context!!, "2",Toast.LENGTH_SHORT).show()
-
-                    } else if (options[item] == "Both"){
+                        SharebooksIntent(p0.context, book)
+                        Toast.makeText(p0.context!!, "2", Toast.LENGTH_SHORT).show()
+                    } else if (options[item] == "Both") {
+                        readAndSharebooksIntent(p0.context,book)
+                        Toast.makeText(p0.context!!, "B", Toast.LENGTH_SHORT).show()
+                    } else if (options[item] == "Cancel") {
                         Toast.makeText(p0.context!!, "3",Toast.LENGTH_SHORT).show()
-                    }
-                    else if (options[item] == "Cancel") {
-                        Toast.makeText(p0.context!!, "4",Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }
-                })
+                }
                 builder.show()
             }
 
         })
+    }
+
+    fun booksReadIntent(p0:Context, book: GoogleBooks){
+        val booksReadFragmentValues = Intent(p0, BooksCollection::class.java)
+        booksReadFragmentValues.putExtra("title", book.title)
+        booksReadFragmentValues.putExtra("author", book.author)
+        booksReadFragmentValues.putExtra("bookImage", book.imageUrl)
+        booksReadFragmentValues.putExtra("option","1")
+        p0.startActivity(booksReadFragmentValues)
+    }
+
+
+    fun SharebooksIntent(p0:Context, book: GoogleBooks){
+        val shareBooksFragmentValues = Intent(p0, BooksCollection::class.java)
+        shareBooksFragmentValues.putExtra("title", book.title)
+        shareBooksFragmentValues.putExtra("author", book.author)
+        shareBooksFragmentValues.putExtra("bookImage", book.imageUrl)
+        shareBooksFragmentValues.putExtra("option","2")
+        p0.startActivity(shareBooksFragmentValues)
+    }
+
+    fun readAndSharebooksIntent(p0:Context, book: GoogleBooks){
+        val shareBooksFragmentValues = Intent(p0, BooksCollection::class.java)
+        shareBooksFragmentValues.putExtra("title", book.title)
+        shareBooksFragmentValues.putExtra("author", book.author)
+        shareBooksFragmentValues.putExtra("bookImage", book.imageUrl)
+        shareBooksFragmentValues.putExtra("option","3")
+        p0.startActivity(shareBooksFragmentValues)
     }
 
     class BooksViewHolder(view: View) : RecyclerView.ViewHolder(view){

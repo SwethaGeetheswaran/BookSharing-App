@@ -65,7 +65,7 @@ class user_post_activity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Choose a picture to post")
 
-            builder.setItems(options, { dialog, item ->
+            builder.setItems(options) { dialog, item ->
                 if (options[item] == "Take Photo") {
                     val takePicture = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
                     startActivityForResult(takePicture, 0)
@@ -80,7 +80,7 @@ class user_post_activity : AppCompatActivity() {
                 } else if (options[item] == "Cancel") {
                     dialog.dismiss()
                 }
-            })
+            }
             builder.show()
         }
 

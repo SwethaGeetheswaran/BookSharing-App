@@ -143,6 +143,7 @@
             </androidx.cardview.widget.CardView>
 
         <RelativeLayout
+            android:id="@+id/friends_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_view_layout">
@@ -172,6 +173,12 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/friends_button"
+            android:id="@+id/display_books_read_list"
+            android:layout_margin="15dp"/>
     </RelativeLayout>
     </ScrollView>
 </LinearLayout>

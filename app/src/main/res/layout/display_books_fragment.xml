@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="horizontal"
+    android:layout_margin="10dp">
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/book"
+        android:contentDescription="@string/book"
+        android:id="@+id/search_book_image"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:id="@+id/book_title"
+            android:text="@string/book_title"
+            android:textColor="@color/colorBlack"
+            android:layout_marginStart="5dp"
+            android:textAlignment="textStart"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:id="@+id/by"
+                android:text="@string/by"
+                android:textColor="@color/colorBlack"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:textAlignment="textStart"
+                android:fontFamily="@font/allerta"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/book_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/cantarell_italic"
+                android:text="@string/book_author"
+                android:textColor="@color/colorBlack"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

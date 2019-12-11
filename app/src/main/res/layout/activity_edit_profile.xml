@@ -230,13 +230,14 @@
                     android:layout_marginTop="15dp"/>
 
                 <RelativeLayout
+                    android:id="@+id/edit_profile_location_layout"
                     android:paddingTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/divider4">
 
                     <TextView
-                        android:id="@+id/location_1"
+                        android:id="@+id/edit_profile_location_1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/location"
@@ -247,17 +248,30 @@
                         android:paddingEnd="10dp"
                         android:textColor="@color/colorBlack"/>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/edit_profile_location_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textAllCaps="false"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:backgroundTint="@color/colorWhite"
+                        android:textColor="@color/colorBlack"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/edit" />
+
                     <TextView
-                        android:id="@+id/location_2"
+                        android:id="@+id/edit_profile_location_2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/location"
+                        android:hint="@string/enter_location"
                         android:textSize="13sp"
                         android:layout_marginTop="10dp"
-                        android:layout_below="@id/location_1"
+                        android:layout_below="@id/edit_profile_location_button"
                         android:paddingStart="10dp"
                         android:background="@android:color/transparent"
                         android:paddingEnd="10dp"
+                        android:paddingBottom="20dp"
                         android:textColor="@color/colorBlack"/>
 
             </RelativeLayout>

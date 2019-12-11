@@ -37,6 +37,8 @@ class editProfileActivity : AppCompatActivity() {
     private lateinit var firstName:String
     private lateinit var lastName:String
     private lateinit var password:String
+    private lateinit var location:String
+    private lateinit var intentLocationValue : String
     private lateinit var mUsersDbRef: DatabaseReference
     private lateinit var mUserStorageRefs : StorageReference
     var ImageUri : Uri? = null
@@ -55,44 +57,13 @@ class editProfileActivity : AppCompatActivity() {
         mUsersDbRef = mDatabase.reference.child("Users").child(currentUserID)
         mUserStorageRefs = FirebaseStorage.getInstance().reference.child("UserProfileImages")
 
+        fetchUserDetailsFromFirebase()
 
-        mUsersDbRef.addValueEventListener(object :ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-                throw p0.toException()
-            }
+        intentLocationValue = intent?.getStringExtra("Location").toString()
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-               if(dataSnapshot.exists()){
-                    firstName = dataSnapshot.child("firstName").value.toString()
-                    lastName = dataSnapshot.child("lastName").value.toString()
-                    val username = firstName + lastName
-                    edit_profile_username_2.setText(username)
-
-                    val email = dataSnapshot.child("email").value.toString()
-                    edit_profile_email_2.setText(email)
-
-                    password = dataSnapshot.child("password").value.toString()
-
-
-                   val profile_image = dataSnapshot.child("ProfileImage").value.toString()
-                   Picasso.get()
-                       .load(profile_image)
-                       .placeholder(R.drawable.ic_profile)
-                       .error(R.drawable.ic_profile_name)
-                       .fit()
-                       .into(edit_profile_image)
-
-                   if(! dataSnapshot.child("about_myself").exists()) {
-                       edit_profile_about_myself_2.setText(R.string.describe_yourself)
-                   } else {
-                       val about_myself = dataSnapshot.child("about_myself").value.toString()
-                       edit_profile_about_myself_2.setText(about_myself)
-                   }
-               }
-            }
-
-        })
-
+        if(intentLocationValue != null){
+            edit_profile_location_2.setText(intentLocationValue)
+        }
 
         edit_profile_username_button.setOnClickListener {
             addViewsToEditUsername()
@@ -115,6 +86,54 @@ class editProfileActivity : AppCompatActivity() {
             startActivityForResult(galleryIntent, mGalleryNo)
         }
 
+        edit_profile_location_button.setOnClickListener {
+            startActivity(MapsActivity.getLaunchIntent(this))
+        }
+    }
+
+    private fun fetchUserDetailsFromFirebase() {
+        mUsersDbRef.addValueEventListener(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                throw p0.toException()
+            }
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(dataSnapshot.exists()){
+                    firstName = dataSnapshot.child("firstName").value.toString()
+                    lastName = dataSnapshot.child("lastName").value.toString()
+                    val username = firstName + lastName
+                    edit_profile_username_2.setText(username)
+
+                    val email = dataSnapshot.child("email").value.toString()
+                    edit_profile_email_2.setText(email)
+
+                    password = dataSnapshot.child("password").value.toString()
+
+                    val profile_image = dataSnapshot.child("ProfileImage").value.toString()
+                    Picasso.get()
+                        .load(profile_image)
+                        .placeholder(R.drawable.ic_profile)
+                        .error(R.drawable.ic_profile_name)
+                        .fit()
+                        .into(edit_profile_image)
+
+                    if(! dataSnapshot.child("about_myself").exists()) {
+                        edit_profile_about_myself_2.setText(R.string.describe_yourself)
+                    } else {
+                        val about_myself = dataSnapshot.child("about_myself").value.toString()
+                        edit_profile_about_myself_2.setText(about_myself)
+                    }
+
+                    if(! dataSnapshot.child("Location").exists()) {
+                        location = resources.getString(R.string.enter_location)
+                        edit_profile_location_2.setText(location)
+                    } else {
+                        location = dataSnapshot.child("Location").value.toString()
+                        edit_profile_location_2.setText(location)
+                    }
+                }
+            }
+
+        })
     }
 
 

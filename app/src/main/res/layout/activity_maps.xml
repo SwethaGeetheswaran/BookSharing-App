@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:id="@+id/map"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_weight="0.7"
+            android:ems="10"
+            android:inputType="textAutoCorrect"
+            android:background="@drawable/maps_search_border"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="7dp"
+            android:textColorHint="@color/colorBlack"
+            android:textColor="@color/colorPurple"
+            android:hint="@string/search_location" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/search_location"
+            android:layout_width="50dp"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:backgroundTint="@color/colorGrey"
+            app:icon="@drawable/ic_book_search"
+            android:layout_weight="0.2"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/set_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:layout_marginTop="5dp"
+            android:text="@string/save_text" />
+
+    </LinearLayout>
+</fragment>

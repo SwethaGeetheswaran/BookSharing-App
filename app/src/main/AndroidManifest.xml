@@ -2,10 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.booksharingapp">
 
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -15,8 +22,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".launcherScreen_activity"
-              android:theme="@style/AppTheme.NoActionBar">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps"/>
+        <activity
+            android:name=".launcherScreen_activity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -36,7 +51,7 @@
         <activity android:name=".DisplayFriendsListActivity" />
         <activity android:name=".messageActivity" />
         <activity android:name=".recyclerView_message_activity" />
-        <activity android:name=".editProfileActivity" />
+        <activity android:name=".editProfileActivity"/>
         <activity android:name=".changePassword" />
         <activity android:name=".BooksCollection" />
         <activity android:name=".GoogleBookWebView" />

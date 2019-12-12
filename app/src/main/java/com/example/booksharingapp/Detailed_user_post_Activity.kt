@@ -29,7 +29,9 @@ class Detailed_user_post_Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_user_post_)
-        supportActionBar?.setTitle(R.string.edit_del_user_post)
+        supportActionBar?.setTitle(R.string.user_post)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         detailed_edit_post_button.visibility = View.INVISIBLE
         detailed_delete_post_button.visibility = View.INVISIBLE
@@ -118,6 +120,13 @@ class Detailed_user_post_Activity : AppCompatActivity() {
         fun getLaunchIntent(from: Context) = Intent(from, Detailed_user_post_Activity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> startActivity(HomeActivity.getLaunchIntent(this))
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 

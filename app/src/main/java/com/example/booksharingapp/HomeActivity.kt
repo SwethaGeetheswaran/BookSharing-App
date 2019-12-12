@@ -70,7 +70,7 @@ class HomeActivity : AppCompatActivity() {
                     if (dataSnapshot.hasChild("firstName") && dataSnapshot.hasChild("lastName")) {
                         val profile_first_name = dataSnapshot.child("firstName").value.toString()
                         val profile_last_name = dataSnapshot.child("lastName").value.toString()
-                        val user_name = profile_first_name + "" + profile_last_name
+                        val user_name = profile_first_name + profile_last_name
                         navig_header_user_name.text = user_name
                     }
 

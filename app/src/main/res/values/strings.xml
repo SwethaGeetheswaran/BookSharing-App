@@ -22,8 +22,8 @@
     <string name="user_name">Username</string>
     <string name="about_myself">About myself</string>
     <string name="select_photo">SELECT PHOTO</string>
-    <string name="add_post">Add a post</string>
-    <string name="edit_del_user_post">Edit/Delete your post</string>
+    <string name="add_post">Write post</string>
+    <string name="user_post">Post</string>
     <string name="post_it_button">Post it!</string>
     <string name="post_text">Whats on your mind about books?</string>
 
@@ -84,4 +84,6 @@
     <string name="has_this_book">has this book</string>
     <string name="distance">0.0</string>
     <string name="send_message">Send Message</string>
+    <string name="default_images">Add default background images</string>
+    <string name="add_images_toPost">Add images to your post</string>
 </resources>

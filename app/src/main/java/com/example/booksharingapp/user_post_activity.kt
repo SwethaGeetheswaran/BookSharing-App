@@ -1,5 +1,6 @@
 package com.example.booksharingapp
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -8,22 +9,25 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_user_post_activity.*
-import android.content.DialogInterface
-import androidx.appcompat.app.AlertDialog
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.view.Menu
 import android.view.View
-import androidx.annotation.NonNull
-import com.google.android.gms.tasks.OnCompleteListener
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,6 +47,7 @@ class user_post_activity : AppCompatActivity() {
     lateinit var downloadUrl:String
     lateinit var currentUserID:String
     private lateinit var mAuth: FirebaseAuth
+    val  MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,58 +63,104 @@ class user_post_activity : AppCompatActivity() {
         mUserPostRef =  mDatabase.reference.child("Users Posts")
         currentUserID = mAuth.currentUser!!.uid
 
-        // Allowing the user to choose image from Camera and gallery.
-        user_post_image.setOnClickListener {
-            val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
+        requestRead()
 
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Choose a picture to post")
-
-            builder.setItems(options) { dialog, item ->
-                if (options[item] == "Take Photo") {
-                    val takePicture = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-                    startActivityForResult(takePicture, 0)
-
-                } else if (options[item] == "Choose from Gallery") {
-                    val pickPhoto = Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    )
-                    startActivityForResult(pickPhoto, 1)
-
-                } else if (options[item] == "Cancel") {
-                    dialog.dismiss()
-                }
-            }
-            builder.show()
+        displayProfileImage()
+        camera_image.setOnClickListener {
+            val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(takePicture, 0)
         }
 
-        // Display appropriate snackbar message when textfield or image is blank.
-       user_post_it_button.setOnClickListener {
-           Log.v(TAG, "post_it_button")
-           if (ImageUri == null) {
-               Log.v(TAG, "post_it_image")
-               val snackbar = Snackbar
-                   .make(relative_layout, "Please select an image", Snackbar.LENGTH_LONG)
-                   .setAction("OK", object : View.OnClickListener {
-                       override fun onClick(view: View) {}
-                   })
-               snackbar.setActionTextColor(Color.WHITE)
-               snackbar.show()
-           } else if (TextUtils.isEmpty((user_post_text).text.toString())) {
-               Log.v(TAG, "post_it_text")
-               val snackbar = Snackbar
-                   .make(relative_layout, "Please enter a text", Snackbar.LENGTH_LONG)
-                   .setAction("OK", object : View.OnClickListener {
-                       override fun onClick(view: View) {}
-                   })
-               snackbar.setActionTextColor(Color.WHITE)
-               snackbar.show()
-           } else {
-               Log.v(TAG, "post_it_new")
-               storeUserPostsToFirebase()
-           }
-       }
+        gallery_image.setOnClickListener {
+            val pickPhoto = Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(pickPhoto, 1)
+
+        }
+
+        checkForDefaultBackgroundImages()
+
+    }
+
+    private fun checkForDefaultBackgroundImages() {
+        default_image1.setOnClickListener {
+                Picasso.get()
+                    .load(R.drawable.default1)
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile_name)
+                    .fit()
+                    .into(user_post_image)
+
+            ImageUri = Uri.parse("android.resource://" + this.packageName+"/drawable/default1")
+        }
+
+        default_image2.setOnClickListener {
+            Picasso.get()
+                .load(R.drawable.default2)
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile_name)
+                .fit()
+                .into(user_post_image)
+            ImageUri = Uri.parse("android.resource://com.example.booksharingapp/drawable/default2")
+        }
+
+        default_image3.setOnClickListener {
+            Picasso.get()
+                .load(R.drawable.default3)
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile_name)
+                .fit()
+                .into(user_post_image)
+            ImageUri = Uri.parse("android.resource://com.example.booksharingapp/drawable/default3")
+        }
+    }
+
+    private fun displayProfileImage() {
+        mUserDBRef.child(currentUserID).addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                Log.v(TAG, "saveUserPostDataToFirebase" + p0.message)
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    val user_Profile_Image = p0.child("ProfileImage").value.toString()
+                    Picasso.get()
+                        .load(user_Profile_Image)
+                        .placeholder(R.drawable.ic_profile)
+                        .error(R.drawable.ic_profile_name)
+                        .fit()
+                        .into(profile_image)
+                }
+            }
+        })
+    }
+
+    // Display appropriate snackbar message when textfield or image is blank.
+    fun validationForAddingPost(){
+        Log.v(TAG, "post_it_button")
+        if (ImageUri == null) {
+            Log.v(TAG, "post_it_image")
+            val snackbar = Snackbar
+                .make(relative_layout, "Please select an image", Snackbar.LENGTH_LONG)
+                .setAction("OK", object : View.OnClickListener {
+                    override fun onClick(view: View) {}
+                })
+            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.show()
+        } else if (TextUtils.isEmpty((user_post_text).text.toString())) {
+            Log.v(TAG, "post_it_text")
+            val snackbar = Snackbar
+                .make(relative_layout, "Please enter a text", Snackbar.LENGTH_LONG)
+                .setAction("OK", object : View.OnClickListener {
+                    override fun onClick(view: View) {}
+                })
+            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.show()
+        } else {
+            Log.v(TAG, "post_it_new")
+            storeUserPostsToFirebase()
+        }
     }
 
     // Save the post's image in Firebase storage. USe current date & time to store it.
@@ -181,13 +232,50 @@ class user_post_activity : AppCompatActivity() {
 
     }
 
+    fun requestRead() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode : Int, permissions : Array<String>, grantResults :IntArray) {
+
+    if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.v(TAG,"Permission granted")
+        } else {
+            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+        return
+    }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+
+
+    // Get the imageUri for Camera image.
+   fun  getImageUri( inContext : Context, inImage : Bitmap) : Uri {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null)
+        return Uri.parse(path)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_CANCELED) {
             when (requestCode) {
                 0 -> if (resultCode == Activity.RESULT_OK && data != null) {
-                    ImageUri = data.data
+                    val tempUri= data.data
+                    Log.v(TAG,"camera image: " +tempUri)
                     val selectedImage = data.extras!!.get("data") as Bitmap?
+                    ImageUri = getImageUri(this,selectedImage!!)
+                    Log.v(TAG,"camera image-1: " +ImageUri)
                     user_post_image.setImageBitmap(selectedImage)
                 }
                 1 -> if (resultCode == Activity.RESULT_OK && data != null) {
@@ -209,8 +297,15 @@ class user_post_activity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.add_bookpost_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
+            R.id.add_post -> validationForAddingPost()
             android.R.id.home -> startActivity(HomeActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)

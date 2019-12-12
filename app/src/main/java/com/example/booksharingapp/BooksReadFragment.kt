@@ -23,7 +23,7 @@ class BooksReadFragment : Fragment(){
     private lateinit var recyclerList: RecyclerView
     private lateinit var emptyText: TextView
     private  var TAG = "BooksReadFragment"
-    var addReadBooksArrayList : ArrayList<allUsersBooksList> = ArrayList()
+    var addReadBooksArrayList : ArrayList<Book> = ArrayList()
     var key: String? = null
     lateinit var recyclerBooksAdapter: booksRead_fragment_adapter
 
@@ -71,8 +71,7 @@ class BooksReadFragment : Fragment(){
                 val position = viewHolder.adapterPosition
                 adapter.removeAt(position)
                 Log.v(TAG,"position1:" +position)
-                //Log.v(TAG,"key: "+key)
-                //adapter.notifyDataSetChanged()
+                adapter.notifyDataSetChanged()
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
@@ -85,11 +84,12 @@ class BooksReadFragment : Fragment(){
         mDatabaseReference.child(currentUserId).addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) { throw p0.toException() }
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                addReadBooksArrayList.clear()
                 val children = dataSnapshot.children
                 println("count: "+dataSnapshot.children.count().toString())
                 children.forEach {
                     key = it.key
-                    //Log.v(TAG,"key: " + key)
+                    Log.v(TAG,"key: " + key)
                     fetchBooksForUser(key!!)
                 }
 
@@ -102,7 +102,7 @@ class BooksReadFragment : Fragment(){
             override fun onCancelled(p0: DatabaseError) { }
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.exists()) {
-                    val addReadBooksList = p0.getValue(allUsersBooksList::class.java)
+                    val addReadBooksList = p0.getValue(Book::class.java)
                     addReadBooksArrayList.add(addReadBooksList!!)
                     recyclerBooksAdapter = booksRead_fragment_adapter(addReadBooksArrayList, key)
                     recyclerList.adapter = recyclerBooksAdapter

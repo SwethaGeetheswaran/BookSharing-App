@@ -80,4 +80,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="set_location">Set Location</string>
     <string name="search_location">Search Location</string>
+    <string name="search_books_navig">Search Books</string>
+    <string name="has_this_book">has this book</string>
+    <string name="distance">0.0</string>
+    <string name="send_message">Send Message</string>
 </resources>

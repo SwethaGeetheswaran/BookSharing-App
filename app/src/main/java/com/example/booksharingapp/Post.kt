@@ -1,6 +1,6 @@
 package com.example.booksharingapp
 
-class allUserPost{
+class Post{
     var UID : String? = null
     var fullname: String? = null
     var postimage: String? = null

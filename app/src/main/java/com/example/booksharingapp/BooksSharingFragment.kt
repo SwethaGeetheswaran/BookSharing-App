@@ -22,7 +22,7 @@ class BooksSharingFragment : Fragment(){
     private lateinit var recyclerList: RecyclerView
     private lateinit var emptyText: TextView
     private  var TAG = "BooksShareFragment"
-    var addReadBooksArrayList : ArrayList<allUsersBooksList> = ArrayList()
+    var addReadBooksArrayList : ArrayList<Book> = ArrayList()
     var key: String? = null
     lateinit var recyclerBooksAdapter: booksSharing_fragment_adapter
 
@@ -91,7 +91,7 @@ class BooksSharingFragment : Fragment(){
             ValueEventListener {
             override fun onCancelled(p0: DatabaseError) { }
             override fun onDataChange(p0: DataSnapshot) {
-                val addReadBooksList = p0.getValue(allUsersBooksList::class.java)
+                val addReadBooksList = p0.getValue(Book::class.java)
                 addReadBooksArrayList.add(addReadBooksList!!)
                 recyclerBooksAdapter = booksSharing_fragment_adapter(addReadBooksArrayList,key)
                 recyclerList.adapter = recyclerBooksAdapter

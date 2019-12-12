@@ -1,6 +1,6 @@
 package com.example.booksharingapp
 
-class UsersList{
+class User{
     var firstName: String? = null
     var lastName: String? = null
     var ProfileImage: String? = null

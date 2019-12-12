@@ -91,6 +91,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onNavigationItemSelected(item: MenuItem): Boolean {
                 val id = item.getItemId()
                 when (id) {
+                    R.id.search_books -> startActivity(searchBook_activity.getLaunchIntent(this@HomeActivity))
                     R.id.books_collection -> startActivity(BooksCollection.getLaunchIntent(this@HomeActivity))
                     R.id.settings -> startActivity(editProfileActivity.getLaunchIntent(this@HomeActivity))
                     R.id.message -> startActivity(recyclerView_message_activity.getLaunchIntent(this@HomeActivity))
@@ -111,19 +112,19 @@ class HomeActivity : AppCompatActivity() {
 
     fun displayUsersPostsList(){
 
-        val option = FirebaseRecyclerOptions.Builder<allUserPost>()
-            .setQuery(mUserPostDBRef, allUserPost::class.java)
+        val option = FirebaseRecyclerOptions.Builder<Post>()
+            .setQuery(mUserPostDBRef, Post::class.java)
             .setLifecycleOwner(this)
             .build()
 
 
-        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<allUserPost, allUsersPostViewHolder>(option) {
+        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<Post, allUsersPostViewHolder>(option) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): allUsersPostViewHolder {
                 return allUsersPostViewHolder((LayoutInflater.from(parent.context)
                     .inflate(R.layout.all_users_post,parent,false)))
             }
 
-            override fun onBindViewHolder(holder: allUsersPostViewHolder, position: Int, model: allUserPost) {
+            override fun onBindViewHolder(holder: allUsersPostViewHolder, position: Int, model: Post) {
                 val placeid = getRef(position).key.toString()
 
                 mUserPostDBRef.child(placeid).addValueEventListener(object : ValueEventListener{

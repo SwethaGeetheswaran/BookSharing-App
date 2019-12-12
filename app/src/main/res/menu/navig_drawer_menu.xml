@@ -13,6 +13,9 @@
     <item android:id="@+id/books_collection"
           android:icon="@drawable/book"
         android:title="@string/book"/>
+    <item android:id="@+id/search_books"
+        android:icon="@drawable/ic_book_search"
+        android:title="@string/search_books_navig"/>
     <item android:id="@+id/message"
         android:icon="@drawable/ic_message"
         android:title="@string/message"/>

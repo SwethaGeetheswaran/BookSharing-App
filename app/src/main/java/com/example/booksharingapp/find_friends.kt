@@ -58,13 +58,13 @@ class find_friends : AppCompatActivity() {
             .startAt(searchFriendsName).endAt(searchFriendsName + "uf8ff")
 
 
-        val option = FirebaseRecyclerOptions.Builder<UsersList>()
-            .setQuery(searchFriendsQuery, UsersList::class.java)
+        val option = FirebaseRecyclerOptions.Builder<User>()
+            .setQuery(searchFriendsQuery, User::class.java)
             .setLifecycleOwner(this)
             .build()
 
 
-        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<UsersList,allUsersListViewHolder>(option) {
+        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<User,allUsersListViewHolder>(option) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): allUsersListViewHolder {
                 return allUsersListViewHolder(
                     (LayoutInflater.from(parent.context)
@@ -72,7 +72,7 @@ class find_friends : AppCompatActivity() {
                 )
             }
 
-            override fun onBindViewHolder(holder: allUsersListViewHolder, position: Int, model: UsersList) {
+            override fun onBindViewHolder(holder: allUsersListViewHolder, position: Int, model: User) {
                 val placeid = getRef(position).key.toString()
 
                 mDatabaseReference.child(placeid).addValueEventListener(object : ValueEventListener {

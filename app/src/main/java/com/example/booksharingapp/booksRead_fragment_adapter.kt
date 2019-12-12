@@ -11,12 +11,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 
-class booksRead_fragment_adapter(var addbooksList : ArrayList<allUsersBooksList>, var key : String?) : RecyclerView.Adapter<booksRead_fragment_adapter.BooksViewHolder>() {
+class booksRead_fragment_adapter(var addbooksList : ArrayList<Book>, var key : String?) : RecyclerView.Adapter<booksRead_fragment_adapter.BooksViewHolder>() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mDatabaseReference: DatabaseReference
-    private lateinit var mRemoveRef: DatabaseReference
     private lateinit var currentUserId: String
     private val TAG = "booksRead_frag_adapter"
 
@@ -45,10 +44,9 @@ class booksRead_fragment_adapter(var addbooksList : ArrayList<allUsersBooksList>
             }
 
         })
+        addbooksList.removeAt(position)
         notifyItemRemoved(position)
         notifyDataSetChanged()
-        addbooksList.removeAt(position)
-
     }
 
     override fun getItemCount(): Int {

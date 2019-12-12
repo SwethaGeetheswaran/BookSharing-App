@@ -54,13 +54,13 @@ class DisplayFriendsListActivity : AppCompatActivity() {
     }
 
     private fun displayAllFriendsFromFirebaseDatabase() {
-        val option = FirebaseRecyclerOptions.Builder<UsersList>()
-            .setQuery(mFriendsDbRef, UsersList::class.java)
+        val option = FirebaseRecyclerOptions.Builder<User>()
+            .setQuery(mFriendsDbRef, User::class.java)
             .setLifecycleOwner(this)
             .build()
 
 
-        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<UsersList,allFriendsListViewHolder>(option) {
+        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<User,allFriendsListViewHolder>(option) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):allFriendsListViewHolder {
                 return allFriendsListViewHolder(
                     (LayoutInflater.from(parent.context)
@@ -68,7 +68,7 @@ class DisplayFriendsListActivity : AppCompatActivity() {
                 )
             }
 
-            override fun onBindViewHolder(holder: allFriendsListViewHolder, position: Int, model: UsersList) {
+            override fun onBindViewHolder(holder: allFriendsListViewHolder, position: Int, model: User) {
                 val placeid = getRef(position).key.toString()
 
                 mUsersDbRef.child(placeid).addValueEventListener(object : ValueEventListener {

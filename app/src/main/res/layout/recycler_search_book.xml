@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    tools:context=".searchBook_activity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/books_relative_layout"
+        android:layout_marginTop="15dp">
+
+        <EditText
+            android:layout_width="280dp"
+            android:layout_height="75dp"
+            android:id="@+id/search_book_name"
+            android:layout_marginStart="21dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
+            android:ems="10"
+            android:hint="@string/search_book"
+            android:inputType="text"
+            android:background="@drawable/borders"
+            android:padding="10dp"
+            android:textColorHint="@color/colorBlack"
+            android:textColor="@color/colorPurple"/>
+
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/search_book_button"
+            android:layout_toEndOf="@id/search_book_name"
+            android:src="@drawable/ic_search"
+            android:contentDescription="@string/book"
+            android:background="@color/colorBlack"
+            android:layout_marginTop="10dp"/>
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/books_relative_layout"
+        android:layout_margin="10dp"
+        android:id="@+id/recycler_books_list"/>
+
+</RelativeLayout>

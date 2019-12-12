@@ -21,7 +21,7 @@ class user_profile_activity : AppCompatActivity() {
     private lateinit var mBooksReadDbRef: DatabaseReference
     private lateinit var mAuth: FirebaseAuth
     private lateinit var currentUserId:String
-    var addReadBooksArrayList : ArrayList<allUsersBooksList> = ArrayList()
+    var addReadBooksArrayList : ArrayList<Book> = ArrayList()
     var key: String? = null
     private  var TAG = "User_profile_activity"
     lateinit var recyclerBooksAdapter: booksRead_fragment_adapter
@@ -109,7 +109,7 @@ class user_profile_activity : AppCompatActivity() {
         mBooksReadDbRef.child(currentUserId).child(key).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) { }
             override fun onDataChange(p0: DataSnapshot) {
-                val addReadBooksList = p0.getValue(allUsersBooksList::class.java)
+                val addReadBooksList = p0.getValue(Book::class.java)
                 addReadBooksArrayList.add(addReadBooksList!!)
                 recyclerBooksAdapter = booksRead_fragment_adapter(addReadBooksArrayList,key)
                 display_books_read_list.adapter = recyclerBooksAdapter

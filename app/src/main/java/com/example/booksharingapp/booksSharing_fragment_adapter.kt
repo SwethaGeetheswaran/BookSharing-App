@@ -12,7 +12,7 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 
 
-class booksSharing_fragment_adapter(var addbooksList : List<allUsersBooksList>, var key : String?) : RecyclerView.Adapter<booksSharing_fragment_adapter.BooksViewHolder>() {
+class booksSharing_fragment_adapter(var addbooksList : List<Book>, var key : String?) : RecyclerView.Adapter<booksSharing_fragment_adapter.BooksViewHolder>() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: FirebaseDatabase
@@ -26,7 +26,6 @@ class booksSharing_fragment_adapter(var addbooksList : List<allUsersBooksList>, 
     }
 
     override fun getItemCount(): Int {
-       // Log.v(TAG, "size:" +addbooksList.size)
         return addbooksList.size
     }
 
@@ -43,8 +42,6 @@ class booksSharing_fragment_adapter(var addbooksList : List<allUsersBooksList>, 
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists()){
-                   // Log.v(TAG, "title:" +booksList.title)
-
                     holder.book_title.setText(booksList.title)
                     holder.book_author.setText(booksList.Author)
                     Picasso.get()

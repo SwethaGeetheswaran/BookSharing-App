@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 
@@ -16,6 +17,12 @@ class searchBook_adapter(var userIdList: List<String>) : RecyclerView.Adapter<se
 
     private lateinit var mUsersDB: DatabaseReference
     private lateinit var mDatabase: FirebaseDatabase
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var currentUserID:String
+    private lateinit var currUserLat:String
+    private lateinit var currUserLong:String
+    private lateinit var bookHolderLat:String
+    private lateinit var bookHolderLong:String
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserIdsViewHolder {
@@ -32,10 +39,27 @@ class searchBook_adapter(var userIdList: List<String>) : RecyclerView.Adapter<se
 
         mDatabase = FirebaseDatabase.getInstance()
         mUsersDB = mDatabase.reference.child("Users")
+        mAuth = FirebaseAuth.getInstance()
+        currentUserID = mAuth.currentUser!!.uid
         Log.v("adapter: ","position:" +position)
         val userId = userIdList.get(position)
 
         Log.v("adapter: ","userID" +userId)
+
+        mUsersDB.child(currentUserID).addValueEventListener(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                throw p0.toException() }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.exists()){
+                    if(p0.hasChild("Longitude") && p0.hasChild("Latitude")){
+                        currUserLat = p0.child("Latitude").value.toString()
+                        currUserLong = p0.child("Longitude").value.toString()
+                    }
+                }
+            }
+
+        })
         mUsersDB.child(userId).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) { }
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -51,6 +75,15 @@ class searchBook_adapter(var userIdList: List<String>) : RecyclerView.Adapter<se
                         Picasso.get().load(profile_image).placeholder(R.drawable.ic_profile)
                             .into(holder.user_profile_image)
                     }
+                    if(dataSnapshot.hasChild("Longitude") && dataSnapshot.hasChild("Latitude")){
+                        bookHolderLat = dataSnapshot.child("Latitude").value.toString()
+                        bookHolderLong = dataSnapshot.child("Longitude").value.toString()
+                        val calculatedDistance = distance(currUserLat.toDouble(),currUserLong.toDouble(),
+                            bookHolderLat.toDouble(),bookHolderLong.toDouble())
+                        Log.v("searchAdapter", "dist:" +calculatedDistance)
+                        val dist= String.format("%.1f", calculatedDistance).toDouble()
+                        holder.distance.text = dist.toString() + "mi"
+                    }
                 }
             }
         })
@@ -58,12 +91,25 @@ class searchBook_adapter(var userIdList: List<String>) : RecyclerView.Adapter<se
             override fun onClick(p0: View?) {
                 val messageActivity = Intent(p0?.context,messageActivity::class.java)
                 messageActivity.putExtra("friendUID",userId)
+                messageActivity.putExtra("username",holder.user_fullName.text)
                 p0?.context!!.startActivity(messageActivity)
             }
 
         })
     }
 
+    fun distance(fromLat: Double, fromLon: Double, toLat: Double, toLon: Double): Double {
+        val radius = 3958.756
+        val curLat = Math.toRadians(fromLat)
+        val curLong = Math.toRadians(fromLon)
+        val deltaLat = Math.toRadians(toLat - fromLat)
+        val deltaLon = Math.toRadians(toLon - fromLon)
+        val a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                Math.cos(curLat) * Math.cos(curLong) *
+                Math.sin(deltaLon / 2) * Math.sin(deltaLon/ 2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        return radius * c
+    }
     class UserIdsViewHolder(view: View) : RecyclerView.ViewHolder(view){
         internal var user_fullName = itemView.findViewById<TextView>(R.id.search_profile_name)
         internal var user_profile_image = itemView.findViewById<ImageView>(R.id.search_profile_image)

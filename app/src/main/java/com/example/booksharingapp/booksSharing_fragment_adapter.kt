@@ -12,7 +12,7 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 
 
-class booksSharing_fragment_adapter(var addbooksList : List<Book>, var key : String?) : RecyclerView.Adapter<booksSharing_fragment_adapter.BooksViewHolder>() {
+class booksSharing_fragment_adapter(var addbooksList : ArrayList<Book>, var key : String?) : RecyclerView.Adapter<booksSharing_fragment_adapter.BooksViewHolder>() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: FirebaseDatabase
@@ -24,6 +24,31 @@ class booksSharing_fragment_adapter(var addbooksList : List<Book>, var key : Str
         mAuth = FirebaseAuth.getInstance()
         return BooksViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.display_books_fragment,parent,false))
     }
+    fun removeAt(position: Int){
+        Log.v(TAG,"position:" +position)
+        val books = addbooksList.get(position)
+        val title = books.title
+        Log.v(TAG,"title:" +title)
+        mDatabaseReference = mDatabase.reference.child("BooksShare").child(currentUserId)
+        val mQuery = mDatabaseReference.orderByChild("title").equalTo(title)
+        Log.v(TAG,"query:" +mQuery)
+        mQuery.addValueEventListener(object:ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                throw p0.toException()
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for ( ds in dataSnapshot.getChildren()) {
+                    ds.ref.removeValue()
+                }
+            }
+
+        })
+        addbooksList.removeAt(position)
+        notifyItemRemoved(position)
+        notifyDataSetChanged()
+    }
+
 
     override fun getItemCount(): Int {
         return addbooksList.size

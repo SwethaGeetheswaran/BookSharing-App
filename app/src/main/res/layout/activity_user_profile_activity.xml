@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorBlack"
     tools:context=".user_profile_activity">
 
     <ScrollView
@@ -19,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:id="@+id/relative_layout1"
-            android:background="@color/colorGreyShade">
+            android:background="@color/colorBlack">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_profile"
@@ -29,7 +30,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:src="@drawable/ic_profile"
-                app:civ_border_color="#000000"
+                app:civ_border_color="#FFFFFF"
                 app:civ_border_width="4dp" />
 
             <TextView
@@ -46,16 +47,19 @@
                 android:layout_below="@id/user_profile"/>
 
             <TextView
+                android:id="@+id/about_myself"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/about_myself"
-                android:text="@string/about_myself"
+                android:layout_below="@id/user_profile_name"
                 android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/flamenco"
+                android:text="@string/about_myself"
                 android:textAllCaps="false"
-                android:textSize="20sp"
                 android:textColor="@color/colorWhite"
-                android:layout_below="@id/user_profile_name"/>
+                android:textSize="15sp" />
         </RelativeLayout>
 
             <androidx.cardview.widget.CardView
@@ -69,6 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:background="@color/colorGreyShade"
                     android:baselineAligned="false"
                     android:weightSum="3">
 
@@ -83,6 +88,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/friends"
+                            android:textColor="@color/colorWhite"
                             android:textSize="15sp" />
 
                         <TextView
@@ -90,6 +96,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingTop="10dp"
+                            android:textColor="@color/colorWhite"
                             android:text="@string/zero"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -106,6 +113,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/books_read"
+                            android:textColor="@color/colorWhite"
                             android:textSize="15sp" />
 
                         <TextView
@@ -114,6 +122,7 @@
                             android:layout_height="wrap_content"
                             android:paddingTop="10dp"
                             android:text="@string/zero"
+                            android:textColor="@color/colorWhite"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -128,6 +137,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/books_share"
+                            android:textColor="@color/colorWhite"
                             android:textSize="15sp"/>
                         <TextView
                             android:id="@+id/books_share_count"
@@ -136,6 +146,7 @@
                             android:text="@string/zero"
                             android:textStyle="bold"
                             android:paddingTop="10dp"
+                            android:textColor="@color/colorWhite"
                             android:textSize="20sp"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -173,12 +184,42 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <TextView
+            android:id="@+id/books_read_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/friends_button"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/averia_gruesa_libre"
+            android:text="@string/books_read_coll"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/books_read_header"
             android:id="@+id/display_books_read_list"
-            android:layout_margin="15dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/books_share_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/display_books_read_list"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/averia_gruesa_libre"
+            android:text="@string/books_share_coll"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/books_share_header"
+            android:id="@+id/display_books_share_list"
+            android:layout_marginTop="5dp"/>
     </RelativeLayout>
     </ScrollView>
 </LinearLayout>

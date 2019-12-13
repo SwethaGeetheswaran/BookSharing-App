@@ -34,13 +34,20 @@
         android:layout_marginTop="85dp"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/searchBox"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:id="@+id/searchBox_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:hint="@string/search_book"
+            android:layout_marginStart="7dp"
             android:inputType="text"
-            android:layout_weight="1"/>
+            android:layout_weight="1">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/searchButton"

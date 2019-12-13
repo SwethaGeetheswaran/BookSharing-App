@@ -41,8 +41,9 @@ class editProfileActivity : AppCompatActivity() {
     private lateinit var intentLocationValue : String
     private lateinit var mUsersDbRef: DatabaseReference
     private lateinit var mUserStorageRefs : StorageReference
+    private var googleSignInEmail:String? = null
+    private lateinit var valueEventListener: ValueEventListener
     var ImageUri : Uri? = null
-    private val mGalleryNo = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +66,14 @@ class editProfileActivity : AppCompatActivity() {
             edit_profile_location_2.setText(intentLocationValue)
         }
 
+        googleSignInEmail = intent?.getStringExtra("email").toString()
+        if(!googleSignInEmail.isNullOrEmpty()){
+            edit_profile_email_2.setText(googleSignInEmail)
+            mUsersDbRef.child("email").setValue(googleSignInEmail)
+            edit_profile_password_layout.visibility = View.GONE
+            divider3.visibility = View.GONE
+        }
+
         edit_profile_username_button.setOnClickListener {
             addViewsToEditUsername()
         }
@@ -80,10 +89,10 @@ class editProfileActivity : AppCompatActivity() {
         }
 
         edit_profile_image.setOnClickListener {
-            val galleryIntent = Intent()
-            galleryIntent.action = Intent.ACTION_PICK
-            galleryIntent.type = "image/*"
-            startActivityForResult(galleryIntent, mGalleryNo)
+            CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(1,1)
+                .start(this)
         }
 
         edit_profile_location_button.setOnClickListener {
@@ -92,7 +101,7 @@ class editProfileActivity : AppCompatActivity() {
     }
 
     private fun fetchUserDetailsFromFirebase() {
-        mUsersDbRef.addValueEventListener(object :ValueEventListener{
+        valueEventListener =  mUsersDbRef.addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 throw p0.toException()
             }
@@ -139,13 +148,6 @@ class editProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == mGalleryNo && resultCode == Activity.RESULT_OK && data != null)
-        {
-            CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(1,1)
-                .start(this)
-        }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == Activity.RESULT_OK ) {
@@ -239,7 +241,7 @@ class editProfileActivity : AppCompatActivity() {
                 val userinfo_updates_hashMap = HashMap<String,Any>()
                 userinfo_updates_hashMap.put("about_myself", about_myself)
 
-                mUsersDbRef.updateChildren(userinfo_updates_hashMap)
+                 mUsersDbRef.updateChildren(userinfo_updates_hashMap)
                     .addOnSuccessListener {
                         edit_profile_about_myself_2.setText(about_myself)
                         edit_profile_about_myself_2.visibility = View.VISIBLE
@@ -336,6 +338,11 @@ class editProfileActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mUsersDbRef.removeEventListener(valueEventListener)
     }
     companion object {
         fun getLaunchIntent(from: Context) = Intent(from, editProfileActivity::class.java).apply {

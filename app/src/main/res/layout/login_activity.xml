@@ -6,32 +6,51 @@
     android:layout_height="match_parent">
 
 
-    <EditText
-        android:id="@+id/login_email"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/login_email_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email"
         android:autofillHints="@string/email"
         tools:targetApi="o"
         android:inputType="textEmailAddress"
-        android:drawableStart="@drawable/ic_email"
         android:layout_marginTop="50dp"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp">
 
-    <EditText
-        android:id="@+id/login_password"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_email"
+            android:layout_width="match_parent"
+            android:ems="10"
+            android:drawableStart="@drawable/ic_email"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/login_password_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login_email"
+        android:layout_below="@id/login_email_text"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
-        android:drawableStart="@drawable/ic_password"
         android:layout_marginEnd="20dp"
         android:hint="@string/password"
         android:autofillHints="@string/password"
         tools:targetApi="o"
-        android:inputType="textPassword" />
+        android:inputType="textPassword">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:ems="10"
+            android:drawableStart="@drawable/ic_password"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
@@ -39,67 +58,55 @@
         android:layout_marginStart="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login_password"
+        android:layout_below="@id/login_password_text"
         android:text="@string/show_password"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/checkbox"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:background="@color/colorPurple"
+        android:background="@color/colorGreen"
         android:text="@string/login"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/forgot_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login_button"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:clickable="true"
-        android:gravity="center_horizontal"
-        android:text="@string/forgot_password"
-        android:textSize="20sp"
-        android:focusable="true" />
-
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/create_account_button"
-        android:layout_width="163dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login_button"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="20dp"
-        android:background="@color/colorAccent"
-        android:layout_toEndOf="@id/forgot_password"
+        android:backgroundTint="@color/colorGreen"
+        android:layout_below="@id/login_button"
         android:textColor="@android:color/white"
         android:text="@string/create_account" />
+
+    <TextView
+        android:id="@+id/forgot_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/create_account_button"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:clickable="true"
+        android:textColor="@color/colorAccent"
+        android:gravity="center_horizontal"
+        android:text="@string/forgot_password"
+        android:textSize="15sp"
+        android:focusable="true" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/google_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/create_account_button"
+        android:layout_below="@id/forgot_password"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="20dp" />
-
-    <ImageButton
-        android:id="@+id/fingerprint_authentication"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/google_button"
-        android:layout_marginStart="191dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="173dp"
-        android:background="@color/colorWhite"
-        android:src="@drawable/ic_fingerprint" />
-
 </RelativeLayout>

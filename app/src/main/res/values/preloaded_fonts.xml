@@ -2,6 +2,8 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/allerta</item>
+        <item>@font/averia_gruesa_libre</item>
         <item>@font/cantarell_italic</item>
+        <item>@font/flamenco</item>
     </array>
 </resources>

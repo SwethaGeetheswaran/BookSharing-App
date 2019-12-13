@@ -3,7 +3,8 @@ package com.example.booksharingapp
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
+import android.location.Address
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -20,6 +22,7 @@ import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.create_account.*
+import java.io.IOException
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -30,9 +33,10 @@ class createAccount_Activity : AppCompatActivity() {
     private lateinit var mDatabaseReference: DatabaseReference
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
-    private val mGalleryNo = 1
     private lateinit var mUserStorageRefs : StorageReference
     private  var resultUri  : Uri? = null
+    internal var address: Address? = null
+    internal lateinit var addressList: List<Address>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,27 +49,20 @@ class createAccount_Activity : AppCompatActivity() {
         mUserStorageRefs = FirebaseStorage.getInstance().reference.child("UserProfileImages")
         mAuth = FirebaseAuth.getInstance()
 
-        create_account_button.setOnClickListener { createUserAccount() }
+        create_account_button.setOnClickListener {
+            searchLocation()
+            createUserAccount() }
 
         // Profile image
         create_account_profile_button.setOnClickListener{
-            val galleryIntent = Intent()
-            galleryIntent.action = Intent.ACTION_PICK
-            galleryIntent.type = "image/*"
-            startActivityForResult(galleryIntent, mGalleryNo)
-        }
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if(requestCode == mGalleryNo && resultCode == Activity.RESULT_OK && data != null){
-
-           //  ImageUri = data.data
             CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(1,1)
                 .start(this)
         }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == Activity.RESULT_OK) {
@@ -116,7 +113,7 @@ class createAccount_Activity : AppCompatActivity() {
         val second_password = sec_password.text.toString().trim()
         if (!TextUtils.isEmpty(first_name?.text.toString()) && !TextUtils.isEmpty(last_name?.text.toString())
             && !TextUtils.isEmpty(email?.text.toString()) && !TextUtils.isEmpty(first_password)
-            && !TextUtils.isEmpty(second_password)) {
+            && !TextUtils.isEmpty(second_password) && !TextUtils.isEmpty(user_location.text.toString())) {
 
             Log.v(TAG, "1: " + first_password)
             Log.v(TAG, "2: " +second_password.length)
@@ -146,6 +143,11 @@ class createAccount_Activity : AppCompatActivity() {
                         currentUserDb.child("firstName").setValue(first_name.text.toString().trim())
                         currentUserDb.child("lastName").setValue(last_name.text.toString().trim())
                         currentUserDb.child("email").setValue(email.text.toString().trim())
+                        currentUserDb.child("Location").setValue(address?.locality)
+                        currentUserDb.child("Latitude").setValue(address?.latitude)
+                        currentUserDb.child("Longitude").setValue(address?.longitude)
+                        currentUserDb.child("password").setValue(password.text.toString())
+                        currentUserDb.child("about_myself").setValue(" ")
                         uploadProfileImagetoFirebase(resultUri!!)
                         updateUserInfoAndUI()
                     } else {
@@ -182,6 +184,25 @@ class createAccount_Activity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun searchLocation() {
+        val location: String = user_location.text.toString()
+
+        if (location == "") {
+            Log.v(TAG,"Enter location in create account")
+        }
+        else{
+            val geoCoder = Geocoder(this)
+            try {
+                addressList = geoCoder.getFromLocationName(location, 1)
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            address = addressList[0]
+            //val latLng = LatLng(address!!.latitude, address!!.longitude)
+            Toast.makeText(applicationContext, address?.latitude.toString() + " " + address?.longitude, Toast.LENGTH_LONG).show()
+        }
+    }
     companion object {
         fun getLaunchIntent(from: Context) = Intent(from, createAccount_Activity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

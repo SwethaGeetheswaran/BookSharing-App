@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/create_account_profile_button"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginStart="130dp"
+        android:layout_marginTop="20dp"
         android:text="@string/select_photo"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorBlack"
+        android:backgroundTint="@android:color/transparent"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +27,8 @@
         android:id="@+id/create_account_profile_image"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginStart="130dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="20dp"
         app:civ_border_width="2dp"
         app:civ_border_color="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/create_account_profile_button"
@@ -31,75 +37,143 @@
         app:layout_constraintTop_toTopOf="@+id/create_account_profile_button"/>
 
 
-    <EditText
-        android:id="@+id/first_name"
-        android:ems="10"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/first_name_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:drawableStart="@drawable/ic_profile_name"
         android:layout_below="@id/create_account_profile_image"
         android:layout_margin="8dp"
         android:hint="@string/first_name"
         android:autofillHints="@string/first_name"
         tools:targetApi="o"
-        android:inputType="textPersonName" />
-    <EditText
-        android:id="@+id/last_name"
-        android:layout_below="@id/first_name"
-        android:ems="10"
+        android:inputType="textPersonName">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/first_name"
+            android:layout_width="match_parent"
+            android:ems="10"
+            android:drawableStart="@drawable/ic_profile_name"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/last_name_text"
+        android:layout_below="@id/first_name_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="8dp"
-        android:drawableStart="@drawable/ic_profile_name"
         android:hint="@string/last_name"
         android:autofillHints="@string/last_name"
+        android:backgroundTint="@color/colorWhite"
         tools:targetApi="o"
-        android:inputType="textPersonName" />
-    <EditText
-        android:id="@+id/email"
+        android:inputType="textPersonName" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/last_name"
+            android:drawableStart="@drawable/ic_profile_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/email_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="8dp"
-        android:ems="10"
-        android:drawableStart="@drawable/ic_email"
-        android:layout_below="@id/last_name"
+        android:layout_below="@id/last_name_text"
         android:hint="@string/email"
         android:autofillHints="@string/email"
         tools:targetApi="o"
-        android:inputType="textEmailAddress" />
-    <EditText
-        android:id="@+id/password"
+        android:inputType="textEmailAddress">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email"
+            android:drawableStart="@drawable/ic_email"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/password_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="8dp"
-        android:layout_below="@id/email"
-        android:ems="10"
+        android:layout_below="@id/email_text"
         android:hint="@string/password"
         android:autofillHints="@string/password"
-        android:drawableStart="@drawable/ic_password"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/colorAccent"
         tools:targetApi="o"
-        android:inputType="textPassword" />
-    <EditText
-        android:id="@+id/sec_password"
+        android:inputType="textPassword">
+        <com.google.android.material.textfield.TextInputEditText
+            android:drawableStart="@drawable/ic_password"
+            android:id="@+id/password"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/sec_password_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="8dp"
-        android:layout_below="@id/password"
-        android:ems="10"
+        android:layout_below="@id/password_text"
         android:hint="@string/password2"
-        android:drawableStart="@drawable/ic_password"
         android:autofillHints="@string/password2"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/colorAccent"
         tools:targetApi="o"
-        android:inputType="textPassword" />
-    <Button
+        android:inputType="textPassword">
+        <com.google.android.material.textfield.TextInputEditText
+            android:drawableStart="@drawable/ic_password"
+            android:id="@+id/sec_password"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/location_text"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_below="@id/sec_password_text"
+        android:hint="@string/create_account_location"
+        android:autofillHints="@string/create_account_location"
+        tools:targetApi="o"
+        android:inputType="textPassword">
+        <com.google.android.material.textfield.TextInputEditText
+            android:drawableStart="@drawable/ic_add_location"
+            android:id="@+id/user_location"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/create_account_button"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="8dp"
-        android:layout_below="@id/sec_password"
-        android:background="@color/colorPurple"
+        android:layout_below="@id/location_text"
+        android:backgroundTint="@color/colorGreen"
         android:text="@string/create_account"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
 
 </RelativeLayout>
+</ScrollView>

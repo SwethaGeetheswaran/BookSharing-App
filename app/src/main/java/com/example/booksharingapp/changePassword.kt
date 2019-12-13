@@ -7,11 +7,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -44,7 +39,7 @@ class changePassword : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         mDatabase = FirebaseDatabase.getInstance()
-        userPassword = intent.getStringExtra("password").toString()
+        userPassword = intent?.getStringExtra("password").toString()
         currentUserID = mAuth.currentUser!!.uid
         mUsersDbRef = mDatabase.reference.child("Users").child(currentUserID)
 
@@ -128,14 +123,13 @@ class changePassword : AppCompatActivity() {
 
 
     // To validate password
-    fun isValidPassword(password: String): Boolean {
+   fun isValidPassword(password: String): Boolean {
 
         val pattern: Pattern
         val matcher: Matcher
         val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$"
         pattern = Pattern.compile(PASSWORD_PATTERN)
         matcher = pattern.matcher(password)
-
         return matcher.matches()
 
     }

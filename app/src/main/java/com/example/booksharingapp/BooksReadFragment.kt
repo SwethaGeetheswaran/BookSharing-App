@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_user_profile_activity.*
 
 class BooksReadFragment : Fragment(){
 
@@ -26,6 +27,7 @@ class BooksReadFragment : Fragment(){
     var addReadBooksArrayList : ArrayList<Book> = ArrayList()
     var key: String? = null
     lateinit var recyclerBooksAdapter: booksRead_fragment_adapter
+    private lateinit var valueEventListener: ValueEventListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -42,7 +44,9 @@ class BooksReadFragment : Fragment(){
         recyclerList.setHasFixedSize(true)
         recyclerList.layoutManager = linearLayoutManager
         recyclerList.adapter = recyclerBooksAdapter
-        recyclerList.addItemDecoration(DividerItemDecoration(context,DividerItemDecoration.VERTICAL))
+        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        dividerItemDecoration.setDrawable(context?.getDrawable(R.drawable.recycler_decorator)!!)
+        recyclerList.addItemDecoration(dividerItemDecoration)
 
 
         emptyText = rootView.findViewById(R.id.empty_list)
@@ -81,7 +85,7 @@ class BooksReadFragment : Fragment(){
     }
 
     fun getKeyforFetchingBooks() {
-        mDatabaseReference.child(currentUserId).addValueEventListener(object :ValueEventListener{
+        valueEventListener =mDatabaseReference.child(currentUserId).addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) { throw p0.toException() }
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 addReadBooksArrayList.clear()
@@ -98,7 +102,7 @@ class BooksReadFragment : Fragment(){
     }
 
     private fun fetchBooksForUser(key: String) {
-        mDatabaseReference.child(currentUserId).child(key).addValueEventListener(object : ValueEventListener {
+        valueEventListener =mDatabaseReference.child(currentUserId).child(key).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) { }
             override fun onDataChange(p0: DataSnapshot) {
                 if(p0.exists()) {
@@ -111,4 +115,10 @@ class BooksReadFragment : Fragment(){
         })
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mDatabaseReference.child(currentUserId).removeEventListener(valueEventListener)
+    }
+
 }

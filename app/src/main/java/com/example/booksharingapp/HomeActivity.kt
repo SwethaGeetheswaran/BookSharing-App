@@ -34,7 +34,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var currentUserID:String
-
+    private lateinit var valueEventListener: ValueEventListener
+    private lateinit var mPostEventListener: ValueEventListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity_screen)
@@ -61,7 +62,7 @@ class HomeActivity : AppCompatActivity() {
         all_users_post_list.layoutManager = linearLayoutManager
 
 
-        mDatabaseReference.child(currentUserID).addValueEventListener(object :ValueEventListener{
+        valueEventListener =mDatabaseReference.child(currentUserID).addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
 
             }
@@ -127,7 +128,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: allUsersPostViewHolder, position: Int, model: Post) {
                 val placeid = getRef(position).key.toString()
 
-                mUserPostDBRef.child(placeid).addValueEventListener(object : ValueEventListener{
+               mPostEventListener = mUserPostDBRef.child(placeid).addValueEventListener(object : ValueEventListener{
                     override fun onCancelled(p0: DatabaseError) { }
                     override fun onDataChange(p0: DataSnapshot) {
                             //holder.post_fullName.text = model.fullname
@@ -138,7 +139,7 @@ class HomeActivity : AppCompatActivity() {
                             Picasso.get().load(model.postimage).into(holder.post_image)
                     }
                 })
-                mDatabaseReference.child(model.UID!!).addValueEventListener(object :ValueEventListener{
+                valueEventListener = mDatabaseReference.child(model.UID!!).addValueEventListener(object :ValueEventListener{
                     override fun onCancelled(p0: DatabaseError) { }
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if(dataSnapshot.exists()) {
@@ -206,8 +207,13 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mDatabaseReference.child(currentUserID).removeEventListener(valueEventListener)
+        mUserPostDBRef.child(currentUserID).removeEventListener(mPostEventListener)
+    }
     private fun signOut() {
-        startActivity(MainActivity.getLaunchIntent(this))
+        startActivity(launcherScreen_activity.getLaunchIntent(this))
         FirebaseAuth.getInstance().signOut()
     }
 }

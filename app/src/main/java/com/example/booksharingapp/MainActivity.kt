@@ -33,42 +33,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var firebaseAuth: FirebaseAuth
-
-    var biometricPrompt: BiometricPrompt? = null
-    val newExecutor = Executors.newSingleThreadExecutor()
-
     private var mProgressBar: ProgressBar? = null
 
-    private val callback = object : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            super.onAuthenticationError(errorCode, errString)
-            if (errorCode == ERROR_NEGATIVE_BUTTON && biometricPrompt != null)
-                biometricPrompt!!.cancelAuthentication()
-            runOnUiThread {
-                Toast.makeText(this@MainActivity,errString,Toast.LENGTH_SHORT).show()
-            }
-
-        }
-
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            super.onAuthenticationSucceeded(result)
-            runOnUiThread{
-                Toast.makeText(this@MainActivity,"Authentication succeed",Toast.LENGTH_SHORT).show()
-            }
-            startActivity(HomeActivity.getLaunchIntent(this@MainActivity))
-        }
-
-        override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            runOnUiThread {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Application did not recognize the placed finger print. Please try again!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +44,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         mProgressBar = ProgressBar(this)
-        initializeforFingerprint()
-        intializeForLogin()
+        intializeForgotPassword()
         initializeForCreateAccount()
         login_button.setOnClickListener { loginWithEmailandPassword() }
 
@@ -107,33 +72,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun intializeForLogin(){
+    private fun intializeForgotPassword(){
         forgot_password.setOnClickListener {
             startActivity(Intent(this,Forgot_password_activity::class.java))
         }
     }
 
-    private fun initializeforFingerprint(){
-        if (biometricPrompt == null)
-            biometricPrompt = BiometricPrompt(this, newExecutor, callback)
 
-
-        fingerprint_authentication.setOnClickListener {
-            Log.v("MainActivty","Fingerprint")
-            val promptInfo = buildBiometricPrompt()
-            biometricPrompt!!.authenticate(promptInfo)
-        }
-
-    }
-
-    private fun buildBiometricPrompt(): BiometricPrompt.PromptInfo {
-        return BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Login")
-            .setSubtitle("Login into your account")
-            .setDescription("Touch your finger on the finger print sensor to authorise your account.")
-            .setNegativeButtonText("Cancel")
-            .build()
-    }
 
     private fun loginWithEmailandPassword(){
         val email = login_email?.text.toString()
@@ -187,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Google sign in failed.Please try again", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -196,10 +141,13 @@ class MainActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-
-                startActivity(HomeActivity.getLaunchIntent(this))
+                Log.v(TAG,"email:" +acct.email)
+                Log.v(TAG,"displayName:" +acct.displayName)
+                val googleSignInIntent = Intent(this,editProfileActivity::class.java)
+                googleSignInIntent.putExtra("email",acct.email)
+                startActivity(googleSignInIntent)
             } else {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Google sign in failed. Please try again", Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -85,11 +85,13 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
                     isShow = true
                     collapsingtoolbar_layout.setTitle(getString(R.string.add_book))
                     showOptions(R.id.user_profile_image)
+                    fab.visibility = View.GONE
                 }
                 else if(isShow) {
                     isShow = false
                     collapsingtoolbar_layout.title = " "
-                   hideOptions(R.id.user_profile_image)
+                    hideOptions(R.id.user_profile_image)
+                    fab.visibility = View.VISIBLE
                 }
             }
 
@@ -122,11 +124,7 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     profile_image = dataSnapshot.child("ProfileImage").value.toString()
-                    Picasso.get().load(profile_image)
-                            .placeholder(R.drawable.ic_profile)
-                            .error(R.drawable.ic_profile_name)
-                            .fit()
-                            .into(fab)
+                    Glide.with(this@AddBooksActivity).load(profile_image).into(fab)
 
                 }
             }

@@ -6,6 +6,7 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.books_webview.*
 
+// When the user clicks on a particular book, display it in a webView.
 class GoogleBookWebView : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

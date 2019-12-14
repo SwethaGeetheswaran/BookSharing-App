@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+//Reference : https://www.youtube.com/watch?v=CdgC7emR6j0&list=PLxefhmF0pcPnTQ2oyMffo6QbWtztXu1W_&index=59
 class messageActivity : AppCompatActivity() {
 
     private var friendsUID: String? = null

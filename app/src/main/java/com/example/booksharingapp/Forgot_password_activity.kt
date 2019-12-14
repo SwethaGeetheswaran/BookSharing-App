@@ -26,8 +26,8 @@ class Forgot_password_activity : AppCompatActivity() {
         password_reset_button.setOnClickListener { sendPasswordResetEmail() }
     }
 
-
-    fun sendPasswordResetEmail(){
+    // Send email for forgot password
+    fun sendPasswordResetEmail() {
         val email = reset_email?.text.toString()
         if (!TextUtils.isEmpty(email)) {
             mFirebaseAuth!!.sendPasswordResetEmail(email)
@@ -36,10 +36,11 @@ class Forgot_password_activity : AppCompatActivity() {
                         val message = "Email sent."
                         Log.d(TAG, message)
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this,MainActivity::class.java))
+                        startActivity(Intent(this, MainActivity::class.java))
                     } else {
                         Log.w(TAG, task.exception!!.message)
-                        Toast.makeText(this, "No user found with this email.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "No user found with this email.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
         } else {
@@ -49,7 +50,7 @@ class Forgot_password_activity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(MainActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)

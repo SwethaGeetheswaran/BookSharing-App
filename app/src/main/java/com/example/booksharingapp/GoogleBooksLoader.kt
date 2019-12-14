@@ -6,6 +6,7 @@ import android.content.AsyncTaskLoader
 import android.content.Context
 
 
+// Use loaders to fetch GoogleBooks Api query.
 class GoogleBooksLoader(context: Context?, url: String?) : AsyncTaskLoader<List<GoogleBooks?>?>(context) {
     var url: String? = null
     override fun onStartLoading() {

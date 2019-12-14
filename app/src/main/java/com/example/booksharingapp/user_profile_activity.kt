@@ -191,10 +191,13 @@ class user_profile_activity : AppCompatActivity() {
         mBooksShareDbRef.child(key).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) { }
             override fun onDataChange(p0: DataSnapshot) {
-                val addBooksShare = p0.getValue(Book::class.java)
-                addBooksShareArrayList.add(addBooksShare!!)
-                recyclerBooksShareAdapter = booksSharing_fragment_adapter(addBooksShareArrayList,key)
-                display_books_share_list.adapter = recyclerBooksShareAdapter
+                if(p0.exists()) {
+                    val addBooksShare = p0.getValue(Book::class.java)
+                    addBooksShareArrayList.add(addBooksShare!!)
+                    recyclerBooksShareAdapter =
+                        booksSharing_fragment_adapter(addBooksShareArrayList, key)
+                    display_books_share_list.adapter = recyclerBooksShareAdapter
+                }
             }
         })
 

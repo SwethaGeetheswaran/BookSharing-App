@@ -19,13 +19,14 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_find_friends.*
 
+//Reference: https://www.youtube.com/watch?v=sbOdwk4C_9s&list=PLxefhmF0pcPnTQ2oyMffo6QbWtztXu1W_&index=37
 class find_friends : AppCompatActivity() {
 
-    var searchFriendsName:String? = null
+    var searchFriendsName: String? = null
     private lateinit var mDatabaseReference: DatabaseReference
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var currentUserID:String
+    private lateinit var currentUserID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,15 +44,17 @@ class find_friends : AppCompatActivity() {
         val linearLayoutManager = LinearLayoutManager(this)
         recycler_result_list.layoutManager = linearLayoutManager
 
-        search_friends_button.setOnClickListener(object :View.OnClickListener{
+        // Get the friend's name
+        search_friends_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
-               searchFriendsName = search_friends_name.text.toString()
+                searchFriendsName = search_friends_name.text.toString()
                 findFriendsinFirebaseDatabase()
             }
 
         })
     }
 
+    // Find a friends by his/her name.
     private fun findFriendsinFirebaseDatabase() {
 
         val searchFriendsQuery = mDatabaseReference.orderByChild("firstName")
@@ -64,38 +67,49 @@ class find_friends : AppCompatActivity() {
             .build()
 
 
-        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<User,allUsersListViewHolder>(option) {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): allUsersListViewHolder {
-                return allUsersListViewHolder(
-                    (LayoutInflater.from(parent.context)
-                        .inflate(R.layout.search_display_list, parent, false))
-                )
+        val firebaseRecyclerAdapter =
+            object : FirebaseRecyclerAdapter<User, allUsersListViewHolder>(option) {
+                override fun onCreateViewHolder(
+                    parent: ViewGroup,
+                    viewType: Int
+                ): allUsersListViewHolder {
+                    return allUsersListViewHolder(
+                        (LayoutInflater.from(parent.context)
+                            .inflate(R.layout.search_display_list, parent, false))
+                    )
+                }
+
+                override fun onBindViewHolder(
+                    holder: allUsersListViewHolder,
+                    position: Int,
+                    model: User
+                ) {
+                    val placeid = getRef(position).key.toString()
+
+                    mDatabaseReference.child(placeid)
+                        .addValueEventListener(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {}
+                            override fun onDataChange(p0: DataSnapshot) {
+                                val fullName = model.firstName + model.lastName
+                                holder.user_fullName.text = fullName
+                                Picasso.get().load(model.ProfileImage)
+                                    .into(holder.user_profileImage)
+                            }
+                        })
+                    holder.itemView.setOnClickListener(object : View.OnClickListener {
+                        override fun onClick(p0: View?) {
+                            val friendUID = getRef(position).key
+                            val friendsProfileIntent =
+                                Intent(this@find_friends, friends_profile_activity::class.java)
+                            friendsProfileIntent.putExtra("friendUID", friendUID)
+                            startActivity(friendsProfileIntent)
+
+                        }
+
+                    })
+                }
+
             }
-
-            override fun onBindViewHolder(holder: allUsersListViewHolder, position: Int, model: User) {
-                val placeid = getRef(position).key.toString()
-
-                mDatabaseReference.child(placeid).addValueEventListener(object : ValueEventListener {
-                    override fun onCancelled(p0: DatabaseError) { }
-                    override fun onDataChange(p0: DataSnapshot) {
-                        val fullName = model.firstName + model.lastName
-                        holder.user_fullName.text= fullName
-                        Picasso.get().load(model.ProfileImage).into(holder.user_profileImage)
-                    }
-                })
-                holder.itemView.setOnClickListener(object :View.OnClickListener{
-                    override fun onClick(p0: View?) {
-                        val friendUID = getRef(position).key
-                        val friendsProfileIntent = Intent(this@find_friends, friends_profile_activity::class.java)
-                        friendsProfileIntent.putExtra("friendUID", friendUID)
-                        startActivity(friendsProfileIntent)
-
-                    }
-
-                })
-            }
-
-        }
         recycler_result_list.adapter = firebaseRecyclerAdapter
         firebaseRecyclerAdapter.startListening()
     }
@@ -106,8 +120,9 @@ class find_friends : AppCompatActivity() {
         internal var user_profileImage = itemView.findViewById<ImageView>(R.id.search_profile_image)
 
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(HomeActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)

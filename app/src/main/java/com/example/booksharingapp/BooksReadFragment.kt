@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_user_profile_activity.*
 
-class BooksReadFragment : Fragment(){
+class BooksReadFragment : Fragment() {
 
 
     private lateinit var mDatabaseReference: DatabaseReference
@@ -23,20 +23,23 @@ class BooksReadFragment : Fragment(){
     private lateinit var currentUserId: String
     private lateinit var recyclerList: RecyclerView
     private lateinit var emptyText: TextView
-    private  var TAG = "BooksReadFragment"
-    var addReadBooksArrayList : ArrayList<Book> = ArrayList()
+    private var TAG = "BooksReadFragment"
+    var addReadBooksArrayList: ArrayList<Book> = ArrayList()
     var key: String? = null
     lateinit var recyclerBooksAdapter: booksRead_fragment_adapter
-    private lateinit var valueEventListener: ValueEventListener
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        val rootView : View = inflater.inflate(R.layout.books_read_fragment, container,false)
+        val rootView: View = inflater.inflate(R.layout.books_read_fragment, container, false)
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser!!.uid
         mDatabaseReference = FirebaseDatabase.getInstance().reference.child("BooksRead")
 
-        recyclerBooksAdapter= booksRead_fragment_adapter(addReadBooksArrayList,null)
+        recyclerBooksAdapter = booksRead_fragment_adapter(addReadBooksArrayList, null)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
@@ -50,31 +53,36 @@ class BooksReadFragment : Fragment(){
 
 
         emptyText = rootView.findViewById(R.id.empty_list)
-        mDatabaseReference.child(currentUserId).addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-                throw p0.toException()
-            }
-            override fun onDataChange(p0: DataSnapshot) {
-                if(p0.exists()){
-                    getKeyforFetchingBooks()
-                    emptyText.setText(" ")
-                    emptyText.visibility = View.GONE
-                    recyclerList.visibility = View.VISIBLE
-                } else {
-                    emptyText.setText(R.string.no_data)
-                    emptyText.visibility = View.VISIBLE
-                    recyclerList.visibility = View.GONE
+        mDatabaseReference.child(currentUserId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    throw p0.toException()
                 }
-            }
 
-        })
+                // When no books are added, display "NO BOOKS"
+                // If books are added, display them.
+                override fun onDataChange(p0: DataSnapshot) {
+                    if (p0.exists()) {
+                        getKeyforFetchingBooks()
+                        emptyText.setText(" ")
+                        emptyText.visibility = View.GONE
+                        recyclerList.visibility = View.VISIBLE
+                    } else {
+                        emptyText.setText(R.string.no_book)
+                        emptyText.visibility = View.VISIBLE
+                        recyclerList.visibility = View.GONE
+                    }
+                }
 
+            })
+
+        // Allow the user to swipe delete a book using Swipe Handler callback
         val swipeHandler = object : SwipeToDeleteCallback(context!!) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = recyclerList.adapter as booksRead_fragment_adapter
                 val position = viewHolder.adapterPosition
                 adapter.removeAt(position)
-                Log.v(TAG,"position1:" +position)
+                Log.v(TAG, "position1:" + position)
                 adapter.notifyDataSetChanged()
             }
         }
@@ -84,41 +92,44 @@ class BooksReadFragment : Fragment(){
         return rootView
     }
 
+    // Get all keys/children from "BooksRead" node for the current user.
     fun getKeyforFetchingBooks() {
-        valueEventListener =mDatabaseReference.child(currentUserId).addValueEventListener(object :ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) { throw p0.toException() }
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                addReadBooksArrayList.clear()
-                val children = dataSnapshot.children
-                println("count: "+dataSnapshot.children.count().toString())
-                children.forEach {
-                    key = it.key
-                    Log.v(TAG,"key: " + key)
-                    fetchBooksForUser(key!!)
+        mDatabaseReference.child(currentUserId)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    throw p0.toException()
                 }
 
-            }
-        })
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    addReadBooksArrayList.clear()
+                    val children = dataSnapshot.children
+                    println("count: " + dataSnapshot.children.count().toString())
+                    children.forEach {
+                        key = it.key
+                        Log.v(TAG, "key: " + key)
+                        fetchBooksForUser(key!!)
+                    }
+
+                }
+            })
     }
 
+    // Add the list of books for the current user.
     private fun fetchBooksForUser(key: String) {
-        valueEventListener =mDatabaseReference.child(currentUserId).child(key).addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) { }
-            override fun onDataChange(p0: DataSnapshot) {
-                if(p0.exists()) {
-                    val addReadBooksList = p0.getValue(Book::class.java)
-                    addReadBooksArrayList.add(addReadBooksList!!)
-                    recyclerBooksAdapter = booksRead_fragment_adapter(addReadBooksArrayList, key)
-                    recyclerList.adapter = recyclerBooksAdapter
+         mDatabaseReference.child(currentUserId).child(key)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {}
+                override fun onDataChange(p0: DataSnapshot) {
+                    if (p0.exists()) {
+                        val addReadBooksList = p0.getValue(Book::class.java)
+                        addReadBooksArrayList.add(addReadBooksList!!)
+                        recyclerBooksAdapter =
+                            booksRead_fragment_adapter(addReadBooksArrayList, key)
+                        recyclerList.adapter = recyclerBooksAdapter
+                    }
                 }
-            }
-        })
+            })
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mDatabaseReference.child(currentUserId).removeEventListener(valueEventListener)
     }
 
 }

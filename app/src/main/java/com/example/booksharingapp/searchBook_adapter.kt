@@ -44,8 +44,6 @@ class searchBook_adapter(var userIdList: List<String>) : RecyclerView.Adapter<se
         Log.v("adapter: ","position:" +position)
         val userId = userIdList.get(position)
 
-        Log.v("adapter: ","userID" +userId)
-
         mUsersDB.child(currentUserID).addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 throw p0.toException() }
@@ -98,18 +96,7 @@ class searchBook_adapter(var userIdList: List<String>) : RecyclerView.Adapter<se
         })
     }
 
-    fun distance(fromLat: Double, fromLon: Double, toLat: Double, toLon: Double): Double {
-        val radius = 3958.756
-        val curLat = Math.toRadians(fromLat)
-        val curLong = Math.toRadians(fromLon)
-        val deltaLat = Math.toRadians(toLat - fromLat)
-        val deltaLon = Math.toRadians(toLon - fromLon)
-        val a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                Math.cos(curLat) * Math.cos(curLong) *
-                Math.sin(deltaLon / 2) * Math.sin(deltaLon/ 2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        return radius * c
-    }
+
     class UserIdsViewHolder(view: View) : RecyclerView.ViewHolder(view){
         internal var user_fullName = itemView.findViewById<TextView>(R.id.search_profile_name)
         internal var user_profile_image = itemView.findViewById<ImageView>(R.id.search_profile_image)

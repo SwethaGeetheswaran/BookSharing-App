@@ -43,7 +43,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var currentUserID:String
+    private lateinit var currentUserID: String
     private var mMap: GoogleMap? = null
     internal lateinit var mLastLocation: Location
     internal var mCurrLocationMarker: Marker? = null
@@ -57,7 +57,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -83,8 +82,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 buildGoogleApiClient()
                 mMap!!.isMyLocationEnabled = true
             }
@@ -110,8 +112,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         mLocationRequest.interval = 1000
         mLocationRequest.fastestInterval = 1000
         mLocationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             LocationServices.getFusedLocationProviderClient(this)
         }
     }
@@ -126,7 +131,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker!!.remove()
         }
-        //Place current location marker
         val latLng = LatLng(location.latitude, location.longitude)
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
@@ -149,13 +153,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
     }
 
+    // Get the longitude and latitude for the given location
     fun searchLocation() {
         val location: String = editText.text.toString()
-
         if (location == "") {
-            Toast.makeText(applicationContext,"provide location",Toast.LENGTH_SHORT).show()
-        }
-        else{
+            Toast.makeText(applicationContext, "provide location", Toast.LENGTH_SHORT).show()
+        } else {
             val geoCoder = Geocoder(this)
             try {
                 addressList = geoCoder.getFromLocationName(location, 1)
@@ -167,18 +170,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             val latLng = LatLng(address.latitude, address.longitude)
             mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
             mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-            Toast.makeText(applicationContext, address.latitude.toString() + " " + address.longitude, Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                applicationContext,
+                address.latitude.toString() + " " + address.longitude,
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
-    fun updateLocationToFirebase(){
+    fun updateLocationToFirebase() {
         // SAVE the edited location value in Firebase Database.
-        if(TextUtils.isEmpty(editText.text.toString())){
-            Toast.makeText(this,"Location cannot be blank", Toast.LENGTH_SHORT).show()
+        if (TextUtils.isEmpty(editText.text.toString())) {
+            Toast.makeText(this, "Location cannot be blank", Toast.LENGTH_SHORT).show()
         } else {
 
-            val userinfo_updates_hashMap = HashMap<String,Any>()
-            Log.v(TAG,"address: "+address.locality)
+            val userinfo_updates_hashMap = HashMap<String, Any>()
+            Log.v(TAG, "address: " + address.locality)
             userinfo_updates_hashMap.put("Location", address.locality)
             userinfo_updates_hashMap.put("Latitude", address.latitude)
             userinfo_updates_hashMap.put("Longitude", address.longitude)
@@ -202,7 +209,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(editProfileActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)

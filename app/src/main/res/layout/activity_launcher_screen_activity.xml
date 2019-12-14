@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/launcher_screen_backgnd"
+    tools:context=".launcherScreen_activity">
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/app_image"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="70dp"
+        app:lottie_fileName="launcher_logo.json" />
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="BookSharing App"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp"
+        android:layout_marginStart="110dp"
+        android:layout_marginEnd="70dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/allerta"
+        android:layout_below="@id/app_image" />
+
+    <TextView
+        android:id="@+id/app_description"
+        android:layout_width="265dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="69dp"
+        android:lineSpacingExtra="6dp"
+        android:text="Helps you connect with people, search and share books with others"
+        android:textAlignment="textStart"
+        android:textColor="@color/colorWhite"
+        android:textSize="15sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/app_start_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_description"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="77dp"
+        android:backgroundTint="#FFCC0A"
+        android:text="GET STARTED"
+        android:textColor="#60470B"
+        android:textSize="15sp"
+        app:cornerRadius="20dp" />
+
+</RelativeLayout>

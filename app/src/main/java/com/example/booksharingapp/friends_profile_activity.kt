@@ -25,8 +25,8 @@ class friends_profile_activity : AppCompatActivity() {
     private lateinit var currentUserId: String
     private var friendsUID: String? = null
     private var currentState: String? = "Unknown"
-    private var savecurrentdate : String? = null
-    private  var TAG = "friends_profile_activity"
+    private var savecurrentdate: String? = null
+    private var TAG = "friends_profile_activity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,23 +38,23 @@ class friends_profile_activity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser!!.uid
         mDatabaseReference = FirebaseDatabase.getInstance().reference.child("Users")
-        mFrdRequestRef= FirebaseDatabase.getInstance().reference.child("FriendRequest")
-        mFriendsRef= FirebaseDatabase.getInstance().reference.child("Friends")
+        mFrdRequestRef = FirebaseDatabase.getInstance().reference.child("FriendRequest")
+        mFriendsRef = FirebaseDatabase.getInstance().reference.child("Friends")
 
 
         friendsUID = intent?.getStringExtra("friendUID").toString()
-        Log.v(TAG,"friendUID: " +friendsUID)
+        Log.v(TAG, "friendUID: " + friendsUID)
 
-        // TO display Friend's profile.
+        // TO display Friend's profile. Fetch friend's details from firebase.
         mDatabaseReference.child(friendsUID!!).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     val profile_first_name = dataSnapshot.child("firstName").value.toString()
                     val profile_last_name = dataSnapshot.child("lastName").value.toString()
-                    val user_name = profile_first_name + " "  + profile_last_name
+                    val user_name = profile_first_name + " " + profile_last_name
                     user_profile_name.text = user_name
 
                     val profile_image = dataSnapshot.child("ProfileImage").value.toString()
@@ -69,51 +69,53 @@ class friends_profile_activity : AppCompatActivity() {
 
         })
 
-        mFriendsRef.child(currentUserId).child(friendsUID!!).addListenerForSingleValueEvent(object  : ValueEventListener{
-            override fun onCancelled(databaseError: DatabaseError) {
-                throw databaseError.toException()
-            }
-            override fun onDataChange(p0: DataSnapshot) {
-                if(p0.exists()) {
-                    send_frd_req_button.setText(R.string.unfriend_request)
-                    send_frd_req_button.isEnabled = true
+        mFriendsRef.child(currentUserId).child(friendsUID!!)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(databaseError: DatabaseError) {
+                    throw databaseError.toException()
                 }
-            }
-        })
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    if (p0.exists()) {
+                        send_frd_req_button.setText(R.string.unfriend_request)
+                        send_frd_req_button.isEnabled = true
+                    }
+                }
+            })
 
         decline_frd_req_button.visibility = View.INVISIBLE
         decline_frd_req_button.isEnabled = false
 
         // To send friend request
-        if(!currentUserId.equals(friendsUID)){
-            send_frd_req_button.setOnClickListener(object: View.OnClickListener{
+        if (!currentUserId.equals(friendsUID)) {
+            send_frd_req_button.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     send_frd_req_button.isEnabled = false
-                    if(currentState.equals("Unknown")){
+                    if (currentState.equals("Unknown")) {
                         decline_frd_req_button.visibility = View.INVISIBLE
                         decline_frd_req_button.isEnabled = false
                         sendFrdRequestToThatPerson()
                     }
-                    if(currentState.equals("sent")){
+                    if (currentState.equals("sent")) {
                         decline_frd_req_button.visibility = View.INVISIBLE
                         decline_frd_req_button.isEnabled = false
                         CancelFriendRequest(mFrdRequestRef)
                     }
-                    if(currentState.equals("received")){
+                    if (currentState.equals("received")) {
                         decline_frd_req_button.visibility = View.VISIBLE
                         decline_frd_req_button.isEnabled = true
                         acceptFriendRequest()
                         decline_frd_req_button.visibility = View.INVISIBLE
                         decline_frd_req_button.isEnabled = false
                     }
-                    if(currentState.equals("friends")){
+                    if (currentState.equals("friends")) {
                         CancelFriendRequest(mFriendsRef) // Unfriend
                     }
                 }
 
             })
 
-            decline_frd_req_button.setOnClickListener(object : View.OnClickListener{
+            decline_frd_req_button.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     CancelFriendRequest(mFrdRequestRef)
                     decline_frd_req_button.visibility = View.INVISIBLE
@@ -137,20 +139,23 @@ class friends_profile_activity : AppCompatActivity() {
         savecurrentdate = current_date.format(date.getTime())
 
         mFriendsRef.child(currentUserId).child(friendsUID!!).child("date")
-            .setValue(savecurrentdate).addOnCompleteListener(object : OnCompleteListener<Void>{
+            .setValue(savecurrentdate).addOnCompleteListener(object : OnCompleteListener<Void> {
                 override fun onComplete(task: Task<Void>) {
-                    if(task.isSuccessful){
+                    if (task.isSuccessful) {
                         mFriendsRef.child(friendsUID!!).child(currentUserId).child("date")
-                            .setValue(savecurrentdate).addOnCompleteListener(object: OnCompleteListener<Void>{
+                            .setValue(savecurrentdate)
+                            .addOnCompleteListener(object : OnCompleteListener<Void> {
                                 override fun onComplete(p0: Task<Void>) {
                                     mFrdRequestRef.child(currentUserId).child(friendsUID!!)
                                         .removeValue()
-                                        .addOnCompleteListener(object :OnCompleteListener<Void>{
+                                        .addOnCompleteListener(object : OnCompleteListener<Void> {
                                             override fun onComplete(task: Task<Void>) {
-                                                if(task.isSuccessful){
-                                                    mFrdRequestRef.child(friendsUID!!).child(currentUserId)
+                                                if (task.isSuccessful) {
+                                                    mFrdRequestRef.child(friendsUID!!)
+                                                        .child(currentUserId)
                                                         .removeValue()
-                                                        .addOnCompleteListener(object : OnCompleteListener<Void>{
+                                                        .addOnCompleteListener(object :
+                                                            OnCompleteListener<Void> {
                                                             override fun onComplete(task: Task<Void>) {
                                                                 currentState = "friends"
                                                                 send_frd_req_button.setText(R.string.unfriend_request)
@@ -177,12 +182,12 @@ class friends_profile_activity : AppCompatActivity() {
     private fun CancelFriendRequest(databaseReference: DatabaseReference) {
         databaseReference.child(currentUserId).child(friendsUID!!)
             .removeValue()
-            .addOnCompleteListener(object :OnCompleteListener<Void>{
+            .addOnCompleteListener(object : OnCompleteListener<Void> {
                 override fun onComplete(task: Task<Void>) {
-                    if(task.isSuccessful){
+                    if (task.isSuccessful) {
                         databaseReference.child(friendsUID!!).child(currentUserId)
                             .removeValue()
-                            .addOnCompleteListener(object : OnCompleteListener<Void>{
+                            .addOnCompleteListener(object : OnCompleteListener<Void> {
                                 override fun onComplete(task: Task<Void>) {
                                     currentState = "Unknown"
                                     send_frd_req_button.setText(R.string.send_frd_request)
@@ -199,65 +204,67 @@ class friends_profile_activity : AppCompatActivity() {
 
     // Change the text from "Send Request" to "Cancel Request" based on the request type
     private fun changeButtonTextfromSendToCancel() {
-        mFrdRequestRef.child(currentUserId).addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onCancelled(databaseError: DatabaseError) {
-                throw databaseError.toException()
-            }
+        mFrdRequestRef.child(currentUserId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(databaseError: DatabaseError) {
+                    throw databaseError.toException()
+                }
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if(dataSnapshot.hasChild(friendsUID!!)) {
-                    val request_type = dataSnapshot.child(friendsUID!!).child("request_type").value.toString()
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.hasChild(friendsUID!!)) {
+                        val request_type =
+                            dataSnapshot.child(friendsUID!!).child("request_type").value.toString()
 
-                    if(request_type.equals("sent")){
+                        if (request_type.equals("sent")) {
                             send_frd_req_button.setText(R.string.cancel_request)
                             currentState = "sent"
-                    } else if (request_type.equals("received")){
+                        } else if (request_type.equals("received")) {
                             send_frd_req_button.setText(R.string.accept_request)
                             currentState = "received"
                             decline_frd_req_button.visibility = View.VISIBLE
                             decline_frd_req_button.isEnabled = true
-                    }else{
-                        mFriendsRef.child(currentUserId)
-                            .addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onCancelled(databaseError: DatabaseError) {
-                                    throw databaseError.toException()
-                                }
+                        } else {
+                            mFriendsRef.child(currentUserId)
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                        throw databaseError.toException()
+                                    }
 
-                                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                   if(dataSnapshot.hasChild(friendsUID!!)){
-                                       currentState = "friends"
-                                       send_frd_req_button.setText(R.string.unfriend_request)
-                                       decline_frd_req_button.visibility = View.INVISIBLE
-                                       decline_frd_req_button.isEnabled = false
-                                   }
-                                }
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        if (dataSnapshot.hasChild(friendsUID!!)) {
+                                            currentState = "friends"
+                                            send_frd_req_button.setText(R.string.unfriend_request)
+                                            decline_frd_req_button.visibility = View.INVISIBLE
+                                            decline_frd_req_button.isEnabled = false
+                                        }
+                                    }
 
-                            })
+                                })
+                        }
                     }
+
                 }
 
-            }
-
-        })
+            })
     }
 
     private fun sendFrdRequestToThatPerson() {
         mFrdRequestRef.child(currentUserId).child(friendsUID!!)
             .child("request_type").setValue("sent")
-            .addOnCompleteListener(object :OnCompleteListener<Void>{
+            .addOnCompleteListener(object : OnCompleteListener<Void> {
                 override fun onComplete(task: Task<Void>) {
-                        if(task.isSuccessful){
-                            mFrdRequestRef.child(friendsUID!!).child(currentUserId)
-                                .child("request_type").setValue("received")
-                                .addOnCompleteListener(object : OnCompleteListener<Void>{
-                                    override fun onComplete(task: Task<Void>) {
-                                        send_frd_req_button.isEnabled = true
-                                        currentState = "sent"
-                                        send_frd_req_button.setText(R.string.cancel_request)
-                                    }
+                    if (task.isSuccessful) {
+                        mFrdRequestRef.child(friendsUID!!).child(currentUserId)
+                            .child("request_type").setValue("received")
+                            .addOnCompleteListener(object : OnCompleteListener<Void> {
+                                override fun onComplete(task: Task<Void>) {
+                                    send_frd_req_button.isEnabled = true
+                                    currentState = "sent"
+                                    send_frd_req_button.setText(R.string.cancel_request)
+                                }
 
-                                })
-                        }
+                            })
+                    }
 
                 }
 
@@ -271,7 +278,7 @@ class friends_profile_activity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(HomeActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)

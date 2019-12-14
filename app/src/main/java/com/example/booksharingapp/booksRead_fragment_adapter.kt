@@ -24,14 +24,13 @@ class booksRead_fragment_adapter(var addbooksList : ArrayList<Book>, var key : S
         return BooksViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.display_books_fragment,parent,false))
     }
 
+    // Remove book when the user swipe deletes an item.
     fun removeAt(position: Int){
         Log.v(TAG,"position:" +position)
         val books = addbooksList.get(position)
         val title = books.title
-        Log.v(TAG,"title:" +title)
         mDatabaseReference = mDatabase.reference.child("BooksRead").child(currentUserId)
         val mQuery = mDatabaseReference.orderByChild("title").equalTo(title)
-        Log.v(TAG,"query:" +mQuery)
         mQuery.addValueEventListener(object:ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 throw p0.toException()

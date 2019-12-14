@@ -33,8 +33,8 @@ class createAccount_Activity : AppCompatActivity() {
     private lateinit var mDatabaseReference: DatabaseReference
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var mUserStorageRefs : StorageReference
-    private  var resultUri  : Uri? = null
+    private lateinit var mUserStorageRefs: StorageReference
+    private var resultUri: Uri? = null
     internal var address: Address? = null
     internal lateinit var addressList: List<Address>
 
@@ -51,16 +51,18 @@ class createAccount_Activity : AppCompatActivity() {
 
         create_account_button.setOnClickListener {
             searchLocation()
-            createUserAccount() }
+            createUserAccount()
+        }
 
-        // Profile image
-        create_account_profile_button.setOnClickListener{
+        // Profile image - Crop the image.
+        create_account_profile_button.setOnClickListener {
             CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(1,1)
+                .setAspectRatio(1, 1)
                 .start(this)
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -69,72 +71,94 @@ class createAccount_Activity : AppCompatActivity() {
                 resultUri = result.uri
                 create_account_profile_button.alpha = 0f
                 Picasso.get()
-                        .load(resultUri)
-                        .placeholder(R.drawable.ic_profile)
-                        .error(R.drawable.ic_profile_name)
-                        .fit()
-                        .into(create_account_profile_image)
+                    .load(resultUri)
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile_name)
+                    .fit()
+                    .into(create_account_profile_image)
 
-            } else{
-                Toast.makeText(this@createAccount_Activity,"Error while cropping image. Please try again.",Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    this@createAccount_Activity,
+                    "Error while cropping image. Please try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         }
     }
 
-    fun uploadProfileImagetoFirebase(resultUri :Uri){
+    // Upload the image to Firebase Storage
+    fun uploadProfileImagetoFirebase(resultUri: Uri) {
         val filePath: StorageReference =
-            mUserStorageRefs.child(UUID.randomUUID().toString()+ ".jpg")
-            filePath.putFile(resultUri).addOnSuccessListener {
-                Log.d(TAG,"Successfully uploaded image: ${it.metadata?.path}")
-                filePath.downloadUrl.addOnSuccessListener {
-                    val currentUserDb = mDatabaseReference.child(mAuth.currentUser!!.uid)
-                    currentUserDb.child("ProfileImage").setValue(it.toString())
-                }
+            mUserStorageRefs.child(UUID.randomUUID().toString() + ".jpg")
+        filePath.putFile(resultUri).addOnSuccessListener {
+            Log.d(TAG, "Successfully uploaded image: ${it.metadata?.path}")
+            filePath.downloadUrl.addOnSuccessListener {
+                val currentUserDb = mDatabaseReference.child(mAuth.currentUser!!.uid)
+                currentUserDb.child("ProfileImage").setValue(it.toString())
             }
+        }
 
     }
+
     // To validate password
     fun isValidPassword(password: String): Boolean {
-
         val pattern: Pattern
         val matcher: Matcher
         val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$"
         pattern = Pattern.compile(PASSWORD_PATTERN)
         matcher = pattern.matcher(password)
-
         return matcher.matches()
-
     }
 
     //  Password validation condition checks - Should not be less than 8 characters. Both the passwords must match.
-    fun createUserAccount(){
+    fun createUserAccount() {
         val first_password = password.text.toString().trim()
         val second_password = sec_password.text.toString().trim()
         if (!TextUtils.isEmpty(first_name?.text.toString()) && !TextUtils.isEmpty(last_name?.text.toString())
             && !TextUtils.isEmpty(email?.text.toString()) && !TextUtils.isEmpty(first_password)
-            && !TextUtils.isEmpty(second_password) && !TextUtils.isEmpty(user_location.text.toString())) {
+            && !TextUtils.isEmpty(second_password) && !TextUtils.isEmpty(user_location.text.toString())
+        ) {
 
             Log.v(TAG, "1: " + first_password)
-            Log.v(TAG, "2: " +second_password.length)
-            if((first_password.length < 8 || second_password.length < 8)&& (!isValidPassword(first_password ) ||!isValidPassword(second_password)) ) {
-                Toast.makeText(this, "Password length is too short. Please enter a minimum of 8 characters.", Toast.LENGTH_SHORT).show()
+            Log.v(TAG, "2: " + second_password.length)
+            if ((first_password.length < 8 || second_password.length < 8) && (!isValidPassword(
+                    first_password
+                ) || !isValidPassword(second_password))
+            ) {
+                Toast.makeText(
+                    this,
+                    "Password length is too short. Please enter a minimum of 8 characters.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (first_password.equals(second_password)) createUser()
+            else {
+                Toast.makeText(
+                    this,
+                    "Mis-match between passwords!. Please re-try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            else if(first_password.equals(second_password)) createUser()
-            else { Toast.makeText(this, "Mis-match between passwords!. Please re-try again.",Toast.LENGTH_SHORT).show() }
-        }
-        else {
-            Toast.makeText(this, "Please enter all details to create an account", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(
+                this,
+                "Please enter all details to create an account",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     // To fetch the user data and save it in Firebase database.
     fun createUser() {
-        if( resultUri == null) {
-            Toast.makeText(this,"Please select a profile image", Toast.LENGTH_SHORT).show()
-        }else {
+        if (resultUri == null) {
+            Toast.makeText(this, "Please select a profile image", Toast.LENGTH_SHORT).show()
+        } else {
             mAuth
-                .createUserWithEmailAndPassword(email.text.toString().trim(), password.text.toString().trim())
+                .createUserWithEmailAndPassword(
+                    email.text.toString().trim(),
+                    password.text.toString().trim()
+                )
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "createUserWithEmail:success")
@@ -152,30 +176,36 @@ class createAccount_Activity : AppCompatActivity() {
                         updateUserInfoAndUI()
                     } else {
                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this, "Authentication failed.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
         }
     }
 
     private fun verifyEmail() {
-    val mUser = mAuth.currentUser
+        val mUser = mAuth.currentUser
         Log.v(TAG, "email-1: " + mUser?.email)
-    mUser!!.sendEmailVerification()
-        .addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                Log.v(TAG, "email: " + mUser.email)
-                Toast.makeText(this,
-                    "Account vertification was successful.Verification email sent to " + mUser.email,
-                    Toast.LENGTH_SHORT).show()
-            } else {
-                Log.e("createAccount_activity", "sendEmailVerification", task.exception)
-                Toast.makeText(this,
-                    "Failed to send verification email.",
-                    Toast.LENGTH_SHORT).show()
+        mUser!!.sendEmailVerification()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.v(TAG, "email: " + mUser.email)
+                    Toast.makeText(
+                        this,
+                        "Account vertification was successful.Verification email sent to " + mUser.email,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Log.e("createAccount_activity", "sendEmailVerification", task.exception)
+                    Toast.makeText(
+                        this,
+                        "Failed to send verification email.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-        }
     }
 
     private fun updateUserInfoAndUI() {
@@ -186,11 +216,9 @@ class createAccount_Activity : AppCompatActivity() {
 
     fun searchLocation() {
         val location: String = user_location.text.toString()
-
         if (location == "") {
-            Log.v(TAG,"Enter location in create account")
-        }
-        else{
+            Log.v(TAG, "Enter location in create account")
+        } else {
             val geoCoder = Geocoder(this)
             try {
                 addressList = geoCoder.getFromLocationName(location, 1)
@@ -199,18 +227,23 @@ class createAccount_Activity : AppCompatActivity() {
                 e.printStackTrace()
             }
             address = addressList[0]
-            //val latLng = LatLng(address!!.latitude, address!!.longitude)
-            Toast.makeText(applicationContext, address?.latitude.toString() + " " + address?.longitude, Toast.LENGTH_LONG).show()
-        }
-    }
-    companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, createAccount_Activity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            Toast.makeText(
+                applicationContext,
+                address?.latitude.toString() + " " + address?.longitude,
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
+    companion object {
+        fun getLaunchIntent(from: Context) =
+            Intent(from, createAccount_Activity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(MainActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)

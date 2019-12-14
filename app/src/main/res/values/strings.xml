@@ -77,6 +77,7 @@
     <string name="no_internet">NO INTERNET</string>
     <string name="google_books_text">Add books using Google Books API</string>
     <string name="no_data"><b>NO DATA</b></string>
+    <string name="no_book"><b>NO BOOKS</b></string>
     <string name="book_title">Title</string>
     <string name="book_author">Author</string>
     <string name="by">by</string>

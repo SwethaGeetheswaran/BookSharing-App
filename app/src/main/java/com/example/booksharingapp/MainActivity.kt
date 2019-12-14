@@ -48,8 +48,9 @@ class MainActivity : AppCompatActivity() {
         initializeForCreateAccount()
         login_button.setOnClickListener { loginWithEmailandPassword() }
 
-        checkbox.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener {
-            override fun onCheckedChanged(compoundButton : CompoundButton, isChecked : Boolean) {
+        // Show/Hide password
+        checkbox.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(compoundButton: CompoundButton, isChecked: Boolean) {
                 if (isChecked) {
                     // hide password
                     checkbox.text = "Hide password"
@@ -65,26 +66,24 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun initializeForCreateAccount(){
+    private fun initializeForCreateAccount() {
         create_account_button.setOnClickListener {
             startActivity(createAccount_Activity.getLaunchIntent(this))
         }
 
     }
 
-    private fun intializeForgotPassword(){
+    private fun intializeForgotPassword() {
         forgot_password.setOnClickListener {
-            startActivity(Intent(this,Forgot_password_activity::class.java))
+            startActivity(Intent(this, Forgot_password_activity::class.java))
         }
     }
 
 
-
-    private fun loginWithEmailandPassword(){
+    private fun loginWithEmailandPassword() {
         val email = login_email?.text.toString()
         val password = login_password?.text.toString()
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-            //mProgressBar!!.text
             mProgressBar!!.isVisible = true
             Log.d(TAG, "Logging in user.")
             firebaseAuth.signInWithEmailAndPassword(email, password)
@@ -92,11 +91,13 @@ class MainActivity : AppCompatActivity() {
                     mProgressBar!!.isVisible = false
                     if (task.isSuccessful) {
                         Log.d(TAG, "signInWithEmail:success")
-                        startActivity(Intent(this,HomeActivity::class.java))
+                        startActivity(Intent(this, HomeActivity::class.java))
                     } else {
                         Log.e(TAG, "signInWithEmail:failure", task.exception)
-                        Toast.makeText(this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this, "Authentication failed.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
         } else {
@@ -104,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Google Sign in
     private fun configureGoogleSignIn() {
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -124,6 +126,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    // Google Sign in
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
@@ -132,22 +135,25 @@ class MainActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                Toast.makeText(this, "Google sign in failed.Please try again", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Google sign in failed.Please try again", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
 
+    // Google Sign in
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                Log.v(TAG,"email:" +acct.email)
-                Log.v(TAG,"displayName:" +acct.displayName)
-                val googleSignInIntent = Intent(this,editProfileActivity::class.java)
-                googleSignInIntent.putExtra("email",acct.email)
+                Log.v(TAG, "email:" + acct.email)
+                Log.v(TAG, "displayName:" + acct.displayName)
+                val googleSignInIntent = Intent(this, editProfileActivity::class.java)
+                googleSignInIntent.putExtra("email", acct.email)
                 startActivity(googleSignInIntent)
             } else {
-                Toast.makeText(this, "Google sign in failed. Please try again", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Google sign in failed. Please try again", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }

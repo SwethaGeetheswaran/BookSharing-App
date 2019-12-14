@@ -34,19 +34,20 @@ import kotlinx.android.synthetic.main.post_books_appbar_layout.*
 import kotlinx.android.synthetic.main.post_books_scrolling.*
 
 //Reference : https://github.com/bhavya-arora/BookListingApp
-class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<GoogleBooks>>{
+class AddBooksActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<GoogleBooks>> {
 
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var currentUserID:String
+    private lateinit var currentUserID: String
     private lateinit var menu: Menu
     private lateinit var profile_image: String
     private lateinit var mUsersDbRef: DatabaseReference
-    private  val GoogleBookUrl = "https://www.googleapis.com/books/v1/volumes"
+    private val GoogleBookUrl = "https://www.googleapis.com/books/v1/volumes"
     private lateinit var googleBooksAdapter: GoogleBooksAdapter
     var googleBooksList: ArrayList<GoogleBooks> = ArrayList()
     private val TAG = "AddBooksActivity"
     private val BOOKS_LOADER_ID = 1
+    private lateinit var valueEventListener: ValueEventListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +65,8 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
         books_progressBar.visibility = View.GONE
 
         //Checking the Network State
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         if (networkInfo == null) {
             empty_state.setText(R.string.no_internet)
@@ -74,20 +76,19 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
 
         collapsingtoolbar_layout.title = " "
         //Show/Hide profile image in Collapsing toolbar
-        app_bar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener{
+        app_bar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if(scrollRange == -1){
+                if (scrollRange == -1) {
                     scrollRange = appBarLayout!!.totalScrollRange
                 }
-                if(scrollRange + verticalOffset == 0) {
+                if (scrollRange + verticalOffset == 0) {
                     isShow = true
                     collapsingtoolbar_layout.setTitle(getString(R.string.add_book))
                     showOptions(R.id.user_profile_image)
                     fab.visibility = View.GONE
-                }
-                else if(isShow) {
+                } else if (isShow) {
                     isShow = false
                     collapsingtoolbar_layout.title = " "
                     hideOptions(R.id.user_profile_image)
@@ -98,6 +99,7 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
         })
 
 
+        // Add books to Adapter
         if (savedInstanceState == null || !savedInstanceState.containsKey("booksList")) {
             googleBooksList = ArrayList<GoogleBooks>()
             googleBooksAdapter = GoogleBooksAdapter(googleBooksList)
@@ -105,18 +107,21 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
             savedInstanceState.getParcelableArrayList<GoogleBooks>("booksList")?.let {
                 googleBooksList.addAll(it)
             }
-            googleBooksAdapter = GoogleBooksAdapter( googleBooksList)
+            googleBooksAdapter = GoogleBooksAdapter(googleBooksList)
             googleBooksAdapter.notifyDataSetChanged()
         }
 
 
+        // Set a Grid View Layout to display books that match the given title as input.
         val mLayoutManager = GridLayoutManager(this, 2)
         recycler_view.setLayoutManager(mLayoutManager)
         recycler_view.addItemDecoration(GridSpacingItemDecoration(2, dpToPx(10), true))
         recycler_view.setItemAnimator(DefaultItemAnimator())
         recycler_view.setAdapter(googleBooksAdapter)
 
-        mUsersDbRef.addValueEventListener(object : ValueEventListener {
+
+        // Display Profile image at the bottom of  Collapsing toolbar
+        valueEventListener = mUsersDbRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 throw p0.toException()
             }
@@ -135,30 +140,30 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         this.menu = menu!!
-        menuInflater.inflate(R.menu.add_newbook_menu,menu)
+        menuInflater.inflate(R.menu.add_newbook_menu, menu)
         hideOptions(R.id.user_profile_image)
         return super.onCreateOptionsMenu(menu)
     }
 
-    fun hideOptions(id:Int){
+    fun hideOptions(id: Int) {
         val menuItem = menu.findItem(id)
         menuItem?.isVisible = false
     }
 
-    fun showOptions(id:Int){
+    fun showOptions(id: Int) {
         val menuItem = menu.findItem(id)
         menuItem?.isVisible = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(BooksCollection.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)
     }
 
-
-
+    // Display profile image at the top right corner of the toolbar.
+    //Note: This image appears only when the toolbar collapses.
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val menuItem = menu?.findItem(R.id.user_profile_image)
         Glide.with(this).asBitmap().load(profile_image)
@@ -190,16 +195,16 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
         books_progressBar.visibility = View.VISIBLE
         googleBooksList.clear()
         googleBooksAdapter.notifyDataSetChanged()
-        loaderManager.restartLoader(BOOKS_LOADER_ID,null,this)
-        loaderManager.initLoader(BOOKS_LOADER_ID,null,this)
-        //LoaderManager.getInstance(this).initLoader(BOOKS_LOADER_ID,null,this)
+        loaderManager.restartLoader(BOOKS_LOADER_ID, null, this)
+        loaderManager.initLoader(BOOKS_LOADER_ID, null, this)
     }
 
+    // Use Loader to fetch the list of books from GoogleBooks Api
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<GoogleBooks>> {
-        val query = searchBox.text.toString()
+        val query = searchBox_text.text.toString()
         if (query.isEmpty() || query.length == 0) {
-            searchBox.error = "Please Enter Any Book"
-            return  GoogleBooksLoader(this, null) as Loader<List<GoogleBooks>>
+            searchBox_text.error = "Please Enter Any Book"
+            return GoogleBooksLoader(this, null) as Loader<List<GoogleBooks>>
         }
 
 
@@ -211,12 +216,15 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
 
         //Hide Keyboard
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-        searchBox.setText("")
+        inputManager.hideSoftInputFromWindow(
+            currentFocus!!.windowToken,
+            InputMethodManager.HIDE_NOT_ALWAYS
+        )
+        searchBox_text.setText("")
 
         Log.v("uriBuilder", uriBuilder.toString())
         //Returning a new Loader Object
-        return  GoogleBooksLoader(this, uriBuilder.toString()) as Loader<List<GoogleBooks>>
+        return GoogleBooksLoader(this, uriBuilder.toString()) as Loader<List<GoogleBooks>>
     }
 
     override fun onLoadFinished(loader: Loader<List<GoogleBooks>>, list: List<GoogleBooks>?) {
@@ -232,9 +240,6 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
 
     override fun onLoaderReset(loader: Loader<List<GoogleBooks>>) {
         Log.i(QueryUtils.TAG, "onLoaderReset: ")
-        /*if (googleBooksAdapter == null) {
-            return
-        }*/
         googleBooksList.clear()
         googleBooksAdapter.notifyDataSetChanged()
     }
@@ -251,7 +256,12 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
         private val includeEdge: Boolean
     ) :
         RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
             val position: Int = parent.getChildAdapterPosition(view)
             val column = position % spanCount
             if (includeEdge) {
@@ -277,6 +287,17 @@ class AddBooksActivity :AppCompatActivity(),LoaderManager.LoaderCallbacks<List<G
 
     private fun dpToPx(dp: Int): Int {
         val r = resources
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), r.displayMetrics))
+        return Math.round(
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp.toFloat(),
+                r.displayMetrics
+            )
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mUsersDbRef.removeEventListener(valueEventListener)
     }
 }

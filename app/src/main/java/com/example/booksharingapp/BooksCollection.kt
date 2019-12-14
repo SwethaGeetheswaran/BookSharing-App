@@ -12,13 +12,13 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.books_tablayout.*
 
-class BooksCollection  :AppCompatActivity(){
+class BooksCollection : AppCompatActivity() {
 
     private lateinit var mBooksReadDbRef: DatabaseReference
     private lateinit var mBooksShareDbRef: DatabaseReference
     private lateinit var mAuth: FirebaseAuth
     private lateinit var currentUserId: String
-    private  var TAG = "BooksCollection"
+    private var TAG = "BooksCollection"
     private var bookTitle: String? = null
     private var bookAuthor: String? = null
     private var bookImage: String? = null
@@ -35,10 +35,14 @@ class BooksCollection  :AppCompatActivity(){
         mBooksReadDbRef = FirebaseDatabase.getInstance().reference.child("BooksRead")
         mBooksShareDbRef = FirebaseDatabase.getInstance().reference.child("BooksShare")
 
+        // Get the option value through intent from GoogleBooksAdapter class.
+        // 1 -> Add books to Books Read Collection
+        // 2 -> Add books to Books Share Collection
+        // 3 -> Both
         val option = intent?.getStringExtra("option").toString()
-        if(option.equals("1")) {
+        if (option.equals("1")) {
             getIntentValuesForBooksRead()
-        } else if(option.equals("2")){
+        } else if (option.equals("2")) {
             getIntentValuesForBooksShare()
         } else {
             getIntentValuesForBooksRead()
@@ -54,16 +58,22 @@ class BooksCollection  :AppCompatActivity(){
         bookTitle = intent?.getStringExtra("title").toString()
         bookAuthor = intent?.getStringExtra("author").toString()
         bookImage = intent?.getStringExtra("bookImage").toString()
-        if(intent!= null && intent.extras!= null){ addReadBooksToFirebase() }
-        else {Log.v(TAG, "All empty-1")}
+        if (intent != null && intent.extras != null) {
+            addReadBooksToFirebase()
+        } else {
+            Log.v(TAG, "All empty-1")
+        }
     }
 
     private fun getIntentValuesForBooksShare() {
         bookTitle = intent?.getStringExtra("title").toString()
         bookAuthor = intent?.getStringExtra("author").toString()
         bookImage = intent?.getStringExtra("bookImage").toString()
-        if(intent!= null && intent.extras!= null){ addShareBooksToFirebase() }
-        else {Log.v(TAG, "All empty-2")}
+        if (intent != null && intent.extras != null) {
+            addShareBooksToFirebase()
+        } else {
+            Log.v(TAG, "All empty-2")
+        }
     }
 
     private fun addReadBooksToFirebase() {
@@ -93,7 +103,7 @@ class BooksCollection  :AppCompatActivity(){
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.add_post -> {
                 startActivity(AddBooksActivity.getLaunchIntent(this))
                 Log.v("BooksCollection", "BookPost")

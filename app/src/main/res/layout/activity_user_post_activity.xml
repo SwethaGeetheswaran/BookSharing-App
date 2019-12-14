@@ -50,66 +50,6 @@
         android:contentDescription="@string/image"
         android:scaleType="centerCrop" />
 
-    <RelativeLayout
-        android:id="@+id/relative_bckng_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:layout_above="@id/relative_image_layout">
-
-        <TextView
-            android:id="@+id/add_default_bckgnd_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingStart="30dp"
-            android:paddingEnd="5dp"
-            android:text="@string/default_images"
-            android:textColor="@color/colorWhite"
-            android:textSize="13sp" />
-
-        <ImageButton
-            android:id="@+id/default_image1"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="21dp"
-            android:layout_toStartOf="@+id/default_image2"
-            android:background="@color/colorBlack"
-            android:paddingStart="5dp"
-            android:contentDescription="@string/image"
-            android:paddingEnd="40dp"
-            android:src="@drawable/default1" />
-
-        <ImageButton
-            android:id="@+id/default_image2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="13dp"
-            android:layout_toStartOf="@+id/default_image3"
-            android:background="@color/colorBlack"
-            android:paddingStart="5dp"
-            android:paddingEnd="20dp"
-            android:contentDescription="@string/image"
-            android:src="@drawable/default2" />
-
-        <ImageButton
-            android:id="@+id/default_image3"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:background="@color/colorBlack"
-            android:padding="10dp"
-            android:contentDescription="@string/image"
-            android:src="@drawable/default3" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:padding="10dp"
-        android:layout_below="@id/relative_bckng_layout"
-        android:background="@color/colorGrey"/>
 
     <RelativeLayout
         android:id="@+id/relative_image_layout"

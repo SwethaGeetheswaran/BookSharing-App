@@ -12,7 +12,8 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 
 
-class booksSharing_fragment_adapter(var addbooksList : ArrayList<Book>, var key : String?) : RecyclerView.Adapter<booksSharing_fragment_adapter.BooksViewHolder>() {
+class booksSharing_fragment_adapter(var addbooksList: ArrayList<Book>, var key: String?) :
+    RecyclerView.Adapter<booksSharing_fragment_adapter.BooksViewHolder>() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: FirebaseDatabase
@@ -22,23 +23,29 @@ class booksSharing_fragment_adapter(var addbooksList : ArrayList<Book>, var key 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BooksViewHolder {
         mAuth = FirebaseAuth.getInstance()
-        return BooksViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.display_books_fragment,parent,false))
+        return BooksViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.display_books_fragment,
+                parent,
+                false
+            )
+        )
     }
-    fun removeAt(position: Int){
-        Log.v(TAG,"position:" +position)
+
+    // Remove book when the user swipe deletes an item.
+    fun removeAt(position: Int) {
+        Log.v(TAG, "position:" + position)
         val books = addbooksList.get(position)
         val title = books.title
-        Log.v(TAG,"title:" +title)
         mDatabaseReference = mDatabase.reference.child("BooksShare").child(currentUserId)
         val mQuery = mDatabaseReference.orderByChild("title").equalTo(title)
-        Log.v(TAG,"query:" +mQuery)
-        mQuery.addValueEventListener(object:ValueEventListener{
+        mQuery.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 throw p0.toException()
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for ( ds in dataSnapshot.getChildren()) {
+                for (ds in dataSnapshot.getChildren()) {
                     ds.ref.removeValue()
                 }
             }
@@ -59,14 +66,15 @@ class booksSharing_fragment_adapter(var addbooksList : ArrayList<Book>, var key 
         currentUserId = mAuth.currentUser!!.uid
         val booksList = addbooksList.get(position)
 
-        mDatabaseReference = mDatabase.reference.child("BooksShare").child(currentUserId).child(key!!)
+        mDatabaseReference =
+            mDatabase.reference.child("BooksShare").child(currentUserId).child(key!!)
         mDatabaseReference.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(databaseError: DatabaseError) {
                 throw databaseError.toException()
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     holder.book_title.setText(booksList.title)
                     holder.book_author.setText(booksList.Author)
                     Picasso.get()
@@ -80,7 +88,7 @@ class booksSharing_fragment_adapter(var addbooksList : ArrayList<Book>, var key 
     }
 
 
-    class BooksViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    class BooksViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         internal var book_title = itemView.findViewById<TextView>(R.id.book_title)
         internal var book_author = itemView.findViewById<TextView>(R.id.book_author)
         internal var book_image = itemView.findViewById<ImageView>(R.id.search_book_image)

@@ -79,11 +79,11 @@ class user_post_activity : AppCompatActivity() {
 
         }
 
-        checkForDefaultBackgroundImages()
+        //checkForDefaultBackgroundImages()
 
     }
 
-    private fun checkForDefaultBackgroundImages() {
+    /*private fun checkForDefaultBackgroundImages() {
         default_image1.setOnClickListener {
                 Picasso.get()
                     .load(R.drawable.default1)
@@ -114,7 +114,7 @@ class user_post_activity : AppCompatActivity() {
                 .into(user_post_image)
             ImageUri = Uri.parse("android.resource://com.example.booksharingapp/drawable/default3")
         }
-    }
+    }*/
 
     private fun displayProfileImage() {
         mUserDBRef.child(currentUserID).addValueEventListener(object : ValueEventListener {

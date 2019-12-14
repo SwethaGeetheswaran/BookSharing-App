@@ -21,14 +21,15 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_display_friends_list.*
 
+//Reference: https://www.youtube.com/watch?v=gaVml9fLYJ0&list=PLxefhmF0pcPnTQ2oyMffo6QbWtztXu1W_&index=54
 class DisplayFriendsListActivity : AppCompatActivity() {
 
     private lateinit var mFriendsDbRef: DatabaseReference
     private lateinit var mUsersDbRef: DatabaseReference
     private lateinit var mDatabase: FirebaseDatabase
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var currentUserID:String
-    private  var TAG = "DisplayFriendsListActivity"
+    private lateinit var currentUserID: String
+    private var TAG = "DisplayFriendsListActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +50,10 @@ class DisplayFriendsListActivity : AppCompatActivity() {
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         display_friends_list_recycler_id.layoutManager = linearLayoutManager
-
         displayAllFriendsFromFirebaseDatabase()
     }
 
+    // To display all friends for the current user.
     private fun displayAllFriendsFromFirebaseDatabase() {
         val option = FirebaseRecyclerOptions.Builder<User>()
             .setQuery(mFriendsDbRef, User::class.java)
@@ -60,62 +61,86 @@ class DisplayFriendsListActivity : AppCompatActivity() {
             .build()
 
 
-        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<User,allFriendsListViewHolder>(option) {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):allFriendsListViewHolder {
-                return allFriendsListViewHolder(
-                    (LayoutInflater.from(parent.context)
-                        .inflate(R.layout.search_display_list, parent, false))
-                )
-            }
+        val firebaseRecyclerAdapter =
+            object : FirebaseRecyclerAdapter<User, allFriendsListViewHolder>(option) {
+                override fun onCreateViewHolder(
+                    parent: ViewGroup,
+                    viewType: Int
+                ): allFriendsListViewHolder {
+                    return allFriendsListViewHolder(
+                        (LayoutInflater.from(parent.context)
+                            .inflate(R.layout.search_display_list, parent, false))
+                    )
+                }
 
-            override fun onBindViewHolder(holder: allFriendsListViewHolder, position: Int, model: User) {
-                val placeid = getRef(position).key.toString()
+                override fun onBindViewHolder(
+                    holder: allFriendsListViewHolder,
+                    position: Int,
+                    model: User
+                ) {
+                    val placeid = getRef(position).key.toString()
 
-                mUsersDbRef.child(placeid).addValueEventListener(object : ValueEventListener {
-                    override fun onCancelled(p0: DatabaseError) { }
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            val firstName = dataSnapshot.child("firstName").value.toString()
-                            val lastName = dataSnapshot.child("lastName").value.toString()
-                            val fullName = firstName + lastName
-                            holder.user_fullName.text= fullName
-                            Picasso.get().load(dataSnapshot.child("ProfileImage").value.toString()).into(holder.user_profileImage)
-                        }
+                    mUsersDbRef.child(placeid)
+                        .addValueEventListener(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {}
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    val firstName = dataSnapshot.child("firstName").value.toString()
+                                    val lastName = dataSnapshot.child("lastName").value.toString()
+                                    val fullName = firstName + lastName
+                                    holder.user_fullName.text = fullName
+                                    Picasso.get()
+                                        .load(dataSnapshot.child("ProfileImage").value.toString())
+                                        .into(holder.user_profileImage)
+                                }
 
-                    }
-                })
-                holder.itemView.setOnClickListener(object :View.OnClickListener{
-                    override fun onClick(p0: View?) {
-                        val options = arrayOf<CharSequence>("View " + holder.user_fullName.text +"'s Profile", "Send a message", "Cancel")
-
-                        val builder = AlertDialog.Builder(this@DisplayFriendsListActivity)
-                        builder.setTitle("Select Options")
-
-                        builder.setItems(options) { dialog, item ->
-                            if (options[item] == "View " + holder.user_fullName.text +"'s Profile") {
-                                val displayFriendsProfile = Intent (this@DisplayFriendsListActivity, friends_profile_activity::class.java)
-                                displayFriendsProfile.putExtra("friendUID", placeid)
-                                Log.v(TAG,"friendUID: " +placeid)
-                                startActivity(displayFriendsProfile)
-
-                            } else if (options[item] == "Send a message") {
-                                val sendMessageToFriends = Intent (this@DisplayFriendsListActivity, messageActivity::class.java)
-                                sendMessageToFriends.putExtra("friendUID", placeid)
-                                sendMessageToFriends.putExtra("username", holder.user_fullName.text)
-                                startActivity(sendMessageToFriends)
-
-                            } else if (options[item] == "Cancel") {
-                                dialog.dismiss()
                             }
+                        })
+                    holder.itemView.setOnClickListener(object : View.OnClickListener {
+                        override fun onClick(p0: View?) {
+                            val options = arrayOf<CharSequence>(
+                                "View " + holder.user_fullName.text + "'s Profile",
+                                "Send a message",
+                                "Cancel"
+                            )
+
+                            val builder = AlertDialog.Builder(this@DisplayFriendsListActivity)
+                            builder.setTitle("Select Options")
+
+                            builder.setItems(options) { dialog, item ->
+                                if (options[item] == "View " + holder.user_fullName.text + "'s Profile") {
+                                    val displayFriendsProfile = Intent(
+                                        this@DisplayFriendsListActivity,
+                                        friends_profile_activity::class.java
+                                    )
+                                    displayFriendsProfile.putExtra("friendUID", placeid)
+                                    Log.v(TAG, "friendUID: " + placeid)
+                                    startActivity(displayFriendsProfile)
+
+                                } else if (options[item] == "Send a message") {
+                                    val sendMessageToFriends = Intent(
+                                        this@DisplayFriendsListActivity,
+                                        messageActivity::class.java
+                                    )
+                                    sendMessageToFriends.putExtra("friendUID", placeid)
+                                    sendMessageToFriends.putExtra(
+                                        "username",
+                                        holder.user_fullName.text
+                                    )
+                                    startActivity(sendMessageToFriends)
+
+                                } else if (options[item] == "Cancel") {
+                                    dialog.dismiss()
+                                }
+                            }
+                            builder.show()
                         }
-                        builder.show()
-                    }
 
-                })
+                    })
+                }
+
             }
-
-        }
-        display_friends_list_recycler_id.adapter= firebaseRecyclerAdapter
+        display_friends_list_recycler_id.adapter = firebaseRecyclerAdapter
         firebaseRecyclerAdapter.startListening()
     }
 
@@ -126,15 +151,16 @@ class DisplayFriendsListActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(HomeActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)
     }
 
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, DisplayFriendsListActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
+        fun getLaunchIntent(from: Context) =
+            Intent(from, DisplayFriendsListActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
     }
 }

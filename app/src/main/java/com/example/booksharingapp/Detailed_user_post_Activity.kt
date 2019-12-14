@@ -18,12 +18,13 @@ import kotlinx.android.synthetic.main.activity_detailed_user_post_.*
 
 class Detailed_user_post_Activity : AppCompatActivity() {
 
-    private var placeId:String? = null
-    private var currentUserId:String? = null
-    private var user_post_text:String? = null
+    private var placeId: String? = null
+    private var currentUserId: String? = null
+    private var user_post_text: String? = null
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabaseReference: DatabaseReference
     private var TAG = "Detailed_user_post_Activity"
+    private lateinit var valueEventListener: ValueEventListener
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,15 +40,16 @@ class Detailed_user_post_Activity : AppCompatActivity() {
         placeId = intent.extras?.get("placeId").toString()
         mAuth = FirebaseAuth.getInstance()
         currentUserId = mAuth.currentUser?.uid
-        mDatabaseReference = FirebaseDatabase.getInstance().reference.child("Users Posts").child(placeId!!)
+        mDatabaseReference =
+            FirebaseDatabase.getInstance().reference.child("Users Posts").child(placeId!!)
 
-        mDatabaseReference.addValueEventListener(object :ValueEventListener{
+        valueEventListener = mDatabaseReference.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-
+                throw p0.toException()
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                if(p0.exists()){
+                if (p0.exists()) {
                     user_post_text = p0.child("description").value.toString()
                     val user_post_image = p0.child("postimage").value.toString()
 
@@ -56,7 +58,7 @@ class Detailed_user_post_Activity : AppCompatActivity() {
 
                     val databaseUserId = p0.child("UID").value.toString()
 
-                    if(currentUserId.equals(databaseUserId)){
+                    if (currentUserId.equals(databaseUserId)) {
                         detailed_edit_post_button.visibility = View.VISIBLE
                         detailed_delete_post_button.visibility = View.VISIBLE
                     }
@@ -66,15 +68,15 @@ class Detailed_user_post_Activity : AppCompatActivity() {
         })
 
         //Delete post
-        detailed_delete_post_button.setOnClickListener(object :View.OnClickListener{
+        detailed_delete_post_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
-                Log.v(TAG,"delete post first")
+                Log.v(TAG, "delete post first")
                 deleteUserPost()
             }
 
         })
 
-            //Edit user text in Post
+        //Edit user text in Post
         detailed_edit_post_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 EditUserPost(user_post_text)
@@ -82,11 +84,15 @@ class Detailed_user_post_Activity : AppCompatActivity() {
         })
     }
 
-    private fun deleteUserPost(){
+    private fun deleteUserPost() {
         Log.v(TAG, "delete post")
         mDatabaseReference.removeValue()
         startActivity(HomeActivity.getLaunchIntent(this@Detailed_user_post_Activity))
-        Toast.makeText(this@Detailed_user_post_Activity, "Post has been deleted", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            this@Detailed_user_post_Activity,
+            "Post has been deleted",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     //Using ALert Dialog display the existing text in Edit Text.
@@ -99,13 +105,13 @@ class Detailed_user_post_Activity : AppCompatActivity() {
         inputField.setText(userEditText)
         builder.setView(inputField)
 
-        builder.setPositiveButton("Update", object: DialogInterface.OnClickListener{
+        builder.setPositiveButton("Update", object : DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 mDatabaseReference.child("description").setValue(inputField.text.toString())
             }
         })
 
-        builder.setNegativeButton("Cancel", object :DialogInterface.OnClickListener{
+        builder.setNegativeButton("Cancel", object : DialogInterface.OnClickListener {
             override fun onClick(dialog: DialogInterface?, p1: Int) {
                 dialog?.cancel()
             }
@@ -117,17 +123,22 @@ class Detailed_user_post_Activity : AppCompatActivity() {
     }
 
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, Detailed_user_post_Activity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
+        fun getLaunchIntent(from: Context) =
+            Intent(from, Detailed_user_post_Activity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> startActivity(HomeActivity.getLaunchIntent(this))
         }
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mDatabaseReference.removeEventListener(valueEventListener)
+    }
 
 }

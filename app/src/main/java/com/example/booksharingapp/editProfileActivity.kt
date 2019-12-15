@@ -61,15 +61,17 @@ class editProfileActivity : AppCompatActivity() {
         // Allows the user to edit his/her details and is updated to Firebase.
         fetchUserDetailsFromFirebase()
 
-        intentLocationValue = intent?.getStringExtra("Location").toString()
+        intentLocationValue = intent?.getStringExtra("location").toString()
+        Log.v(TAG, "address -2:" +intentLocationValue)
 
         if (intentLocationValue != null) {
+            Log.v(TAG, "address -3:" +intentLocationValue)
             edit_profile_location_2.setText(intentLocationValue)
         }
 
         // If the user has logged in through gmail, fetch his/her email and add it to Firebase.
-        googleSignInEmail = intent?.getStringExtra("email").toString()
-        if (!googleSignInEmail.isNullOrEmpty()) {
+        if (intent?.hasExtra("googleMail")!!) {
+            googleSignInEmail = intent?.getStringExtra("googleMail").toString()
             edit_profile_email_2.setText(googleSignInEmail)
             mUsersDbRef.child("email").setValue(googleSignInEmail)
             edit_profile_password_layout.visibility = View.GONE
@@ -118,6 +120,13 @@ class editProfileActivity : AppCompatActivity() {
                     val email = dataSnapshot.child("email").value.toString()
                     edit_profile_email_2.setText(email)
 
+                    if(email.contains("gmail",ignoreCase = true)){
+                        edit_profile_password_layout.visibility = View.GONE
+                        divider3.visibility = View.GONE
+                    } else {
+                        edit_profile_password_layout.visibility = View.VISIBLE
+                        divider3.visibility = View.VISIBLE
+                    }
                     password = dataSnapshot.child("password").value.toString()
 
                     val profile_image = dataSnapshot.child("ProfileImage").value.toString()

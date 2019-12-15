@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 Log.v(TAG, "email:" + acct.email)
                 Log.v(TAG, "displayName:" + acct.displayName)
                 val googleSignInIntent = Intent(this, editProfileActivity::class.java)
-                googleSignInIntent.putExtra("email", acct.email)
+                googleSignInIntent.putExtra("googleMail", acct.email.toString())
                 startActivity(googleSignInIntent)
             } else {
                 Toast.makeText(this, "Google sign in failed. Please try again", Toast.LENGTH_LONG)

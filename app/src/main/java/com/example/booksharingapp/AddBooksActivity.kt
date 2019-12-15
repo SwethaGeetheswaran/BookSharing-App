@@ -18,10 +18,13 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import android.app.LoaderManager
 import android.content.Loader
+import android.view.KeyEvent
 
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.anupcowkur.statelin.Machine
+import com.anupcowkur.statelin.State
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
@@ -48,6 +51,21 @@ class AddBooksActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List
     private val TAG = "AddBooksActivity"
     private val BOOKS_LOADER_ID = 1
     private lateinit var valueEventListener: ValueEventListener
+
+    val stateA = State("A", onEnter = { Log.v("Commons","Entering state A") }, onExit = {Log.v("Commons","Exiting state A")})
+    val stateB = State("B", onEnter = { Log.v("Commons","Entering state B") }, onExit = {Log.v("Commons","Exiting state B")})
+    val machine = Machine(stateA)
+
+
+    val stateC = State("C", onEnter = {
+        Log.v("Commons","Entering state C")
+        books_progressBar.visibility = View.VISIBLE
+        googleBooksList.clear()
+        googleBooksAdapter.notifyDataSetChanged()
+        loaderManager.restartLoader(BOOKS_LOADER_ID, null, this)
+        loaderManager.initLoader(BOOKS_LOADER_ID, null, this)
+    },
+        onExit = {Log.v("Commons","Exiting state C")})
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -192,13 +210,37 @@ class AddBooksActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List
     }
 
     fun searchButton(view: View?) {
-        books_progressBar.visibility = View.VISIBLE
-        googleBooksList.clear()
-        googleBooksAdapter.notifyDataSetChanged()
-        loaderManager.restartLoader(BOOKS_LOADER_ID, null, this)
-        loaderManager.initLoader(BOOKS_LOADER_ID, null, this)
+        machine.state = stateC
+
     }
 
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        when(keyCode){
+            KeyEvent.KEYCODE_A -> {
+                Log.v("Commons", "State-B-Key")
+                machine.state = stateB
+            }
+            KeyEvent.KEYCODE_B -> {
+                Log.v("Commons", "State-B-Key")
+                machine.state = stateB
+            }
+            KeyEvent.KEYCODE_C -> {
+                Log.v("Commons", "State-B-Key")
+                machine.state = stateB
+            }
+            KeyEvent.KEYCODE_D -> {
+                Log.v("Commons", "State-B-key")
+                machine.state = stateB
+            }
+            KeyEvent.KEYCODE_G -> {
+                Log.v("Commons", "State-B-key")
+                machine.state = stateB
+            }
+
+        }
+        return super.onKeyUp(keyCode, event)
+    }
     // Use Loader to fetch the list of books from GoogleBooks Api
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<GoogleBooks>> {
         val query = searchBox_text.text.toString()
